@@ -32,7 +32,7 @@ public class BasicTests {
     void objectInequality() {
 
         Object expected = new Object();
-        Object actual = null;
+        Object actual = new Object();
         assertNotEquals(expected, actual, "Objects aren't different");
     }
 
@@ -40,14 +40,18 @@ public class BasicTests {
     void stringContains() {
 
         String base = "computação";
-        assertTrue(base.contains("o") && base.contains("ta"), "String doesn't contains 'o' and 'ta'");
+        assertAll("String doesn't contains 'o' and 'ta'",
+                () -> assertTrue(base.contains("o"), "String doesn't contains 'o'"),
+                () -> assertTrue(base.contains("ta"), "String doesn't contains 'ta'"));
     }
 
     @Test
-    void listHasAtLeast() {
+    void listHasAtLeastAnd() {
 
         List<String> base = Stream.of("um", "dois", "três", "quatro").collect(Collectors.toList());
-        assertTrue(base.contains("dois") || base.contains("quarto"));
+        assertAll("List doesn't contains 'dois' and 'quatro'",
+                () -> assertTrue(base.contains("dois"), "String doesn't contains 'dois'"),
+                () -> assertTrue(base.contains("quatro"), "String doesn't contains 'quatro'"));
     }
 
     @Test
@@ -56,7 +60,9 @@ public class BasicTests {
         String base = "computação";
         String expected = "computação";
         String begin = "comput";
-        assertTrue(base == expected && base.startsWith(begin), "String isn't equals to \"computação\" or doesn't starts with \"comput\"");
+        assertAll("String isn't equals to \"computação\" or doesn't starts with \"comput\"",
+                () -> assertTrue(base == expected, "String isn't equals to \"computação\""),
+                () -> assertTrue(base.startsWith(begin), "String doesn't starts with \"comput\""));
     }
 
     @Test
@@ -65,15 +71,18 @@ public class BasicTests {
         String base = "instituto";
         String expectedMath = "matemática";
         String expectedPhysics = "física";
-        assertTrue(base != expectedMath && base != expectedPhysics, "String is equal to \"matemática\" or is equal to \"física\"");
+        assertAll("String is equal to \"matemática\" or is equal to \"física\"",
+                () -> assertTrue(base != expectedMath, "String is equal to \"matemática\""),
+                () -> assertTrue(base != expectedPhysics, "String is equal to \"física\""));
     }
 
     @Test
-    void stringIsMathOrPhysics() {
+    void stringIsMathOrInstitute() {
 
         String base = "instituto";
         String expectedMath = "matemática";
         String expectedInstitute = "instituto";
+        // How would I do this with lambda expressions?
         assertTrue(base == expectedMath || base == expectedInstitute, "String isn't equal to \"matemática\" and isn't equal to \"instituto\"");
     }
 
@@ -81,7 +90,9 @@ public class BasicTests {
     void sevenIsntThreeOfFour() {
 
         int seven = 7, three = 3, four = 4;
-        assertTrue(seven != three && seven != four, "7 is equal to 3 or 4");
+        assertAll("7 is equal to 3 or 4",
+                () -> assertTrue(seven != three, "7 is equal to 3"),
+                () -> assertTrue(seven != four, "7 is equal to 4"));
     }
 
     @Test
