@@ -10,13 +10,17 @@ import java.lang.reflect.Field;
 
 public class HelloWorldTest {
 
-    private PrintStream sysOut;
+    private PrintStream originalOut = System.out;
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     void setupStreams() {
-        sysOut = System.out;
         System.setOut(new PrintStream(outContent));
+    }
+
+    @AfterEach
+    void restoreStreams() {
+        System.setOut(originalOut);
     }
 
     @Test
@@ -47,10 +51,5 @@ public class HelloWorldTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @AfterEach
-    void restoreStreams() {
-        System.setOut(sysOut);
     }
 }
