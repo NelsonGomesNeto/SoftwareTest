@@ -2,18 +2,21 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HelloWorldTest2 {
 
-	private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-
 	@Test
-	void testHello() {
+	void testHello() throws IOException {
+
+		//	private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		File f = new File("test.txt");
+		f.createNewFile();
+		FileOutputStream outContent = new FileOutputStream(f);
+
 		Hello2 hello = new Hello2(new PrintStream(outContent));
 		assertNotNull(hello, "Hello is null");
 
