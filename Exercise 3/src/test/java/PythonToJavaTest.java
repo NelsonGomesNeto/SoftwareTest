@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
+//import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collector;
@@ -14,27 +16,23 @@ public class PythonToJavaTest {
     void verifyAnswer() {
 
         PythonToJava py = new PythonToJava();
+        int sieveSize = 10001;
 
-        boolean[] sieve = new boolean[1000];
-        for (int i = 2; i < 1000; i ++) sieve[i] = true;
+        boolean[] sieve = new boolean[sieveSize];
+        for (int i = 2; i < sieveSize; i ++) sieve[i] = true;
 
-        for (int i = 2; i < 1000; i ++)
-            for (int j = 2; i * j < 1000; j ++)
+        for (int i = 2; i < sieveSize; i ++)
+            for (int j = 2; i * j < sieveSize; j ++)
                 sieve[i*j] = false;
 
-        ArrayList<Integer> s = new ArrayList<>();
-        for (int i = 0; i < 1000; i ++) s.add(i);
+        ArrayList<Executable> executables = new ArrayList<>();
+        for (int j = 0; j < sieveSize; j ++) {
+            final int i = j;
+            executables.add(()->assertEquals(sieve[i], py.isPrime(i), i + " should" + (!sieve[i] ? " not" : "") + " be prime"));
+        }
 
-//        for (int i = 0; i < 1000; i ++)
-//            assertTrue(sieve[i] == py.isPrime(i), i + " should" + (sieve[i] ? " not" : "") + " be prime");
-//        assertAll(s.stream().map({assertTrue(sieve[it] == py.isPrime(it), it + " should" + (sieve[it] ? " not" : "") + " be prime")}));
-        assertAll(
-//                Arrays.asList(s).stream().map(() -> i -> assertEquals(sieve[i], py.isPrime(i), i + " should" + (!sieve[i] ? " not" : "") + " be prime"));
-                () -> {
-                    for (int i = 0; i < 1000; i ++) {
-                        assertEquals(sieve[i], py.isPrime(i), i + " should" + (!sieve[i] ? " not" : "") + " be prime");
-                    }
-                }
+        assertAll("Not working for all primes.",
+                executables
         );
     }
 }

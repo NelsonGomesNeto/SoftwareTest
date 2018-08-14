@@ -1,9 +1,9 @@
 public class PythonToJava {
 
     boolean isPrime(int number) {
-        if (number <= 1 || (number % 2) == 0)
+        if (number <= 1)
             return(false);
-        for (int check = 3; check < Math.sqrt(number); check++)
+        for (int check = 2; check <= Math.sqrt(number); check++)
             if (number % check == 0)
                 return(false);
         return(true);
