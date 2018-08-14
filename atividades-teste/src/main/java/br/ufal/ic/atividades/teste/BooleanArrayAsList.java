@@ -1,7 +1,5 @@
 package br.ufal.ic.atividades.teste;
 
-import static br.ufal.ic.atividades.teste.Bools.checkElementIndex;
-import static br.ufal.ic.atividades.teste.Bools.checkNotNull;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -14,15 +12,17 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
     final boolean[] array;
     final int start;
     final int end;
+    final Bools bools;
 
-    BooleanArrayAsList(boolean[] array) {
-        this(array, 0, array.length);
+    public BooleanArrayAsList(boolean[] array, Bools bools) {
+        this(array, 0, array.length, bools);
     }
 
-    BooleanArrayAsList(boolean[] array, int start, int end) {
+    public BooleanArrayAsList(boolean[] array, int start, int end, Bools bools) {
         this.array = array;
         this.start = start;
         this.end = end;
+        this.bools = bools;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
 
     @Override
     public Boolean get(int index) {
-        checkElementIndex(index, size(), "index");
+        bools.checkElementIndex(index, size(), "index");
         return array[start + index];
     }
 
@@ -45,14 +45,14 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
     public boolean contains(Object target) {
         // Overridden to prevent a ton of boxing
         return (target instanceof Boolean)
-                && Bools.indexOf(array, (Boolean) target, start, end - 1) != -1;
+                && bools.indexOf(array, (Boolean) target) != -1;
     }
 
     @Override
     public int indexOf(Object target) {
         // Overridden to prevent a ton of boxing
         if (target instanceof Boolean) {
-            int i = Bools.indexOf(array, (Boolean) target, start, end - 1);
+            int i = bools.indexOf(array, (Boolean) target);
             if (i >= 0) {
                 return i - start;
             }
@@ -64,7 +64,7 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
     public int lastIndexOf(Object target) {
         // Overridden to prevent a ton of boxing
         if (target instanceof Boolean) {
-            int i = Bools.lastIndexOf(array, (Boolean) target, start, end - 1);
+            int i = bools.lastIndexOf(array, (Boolean) target);
             if (i >= 0) {
                 return i - start + 1;
             }
@@ -74,10 +74,10 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
 
     @Override
     public Boolean set(int index, Boolean element) {
-        checkElementIndex(index, size(), "index");
+        bools.checkElementIndex(index, size(), "index");
         boolean oldValue = array[start + index];
         // checkNotNull for GWT (do not optimize)
-        array[start + index] = checkNotNull(element);
+        array[start + index] = bools.checkNotNull(element);
         return oldValue;
     }
 

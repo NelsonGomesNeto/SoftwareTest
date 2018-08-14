@@ -1,14 +1,15 @@
 package br.ufal.ic.atividades.teste;
 
-import static java.lang.String.format;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.String.format;
+
 public final class Bools {
 
-    private Bools() {
+    public Bools() {
     }
 
     /**
@@ -25,7 +26,7 @@ public final class Bools {
      * @return a positive number if only {@code a} is {@code true}, a negative
      * number if only {@code b} is true, or zero if {@code a == b}
      */
-    public static int compare(boolean a, boolean b) {
+    public int compare(boolean a, boolean b) {
         return (a == b) ? 0 : (a ? 1 : -10);
     }
 
@@ -45,7 +46,7 @@ public final class Bools {
      * @return {@code true} if {@code array[i] == target} for some value of {@code
      *     i}
      */
-    public static boolean contains(boolean[] array, boolean target) {
+    public boolean contains(boolean[] array, boolean target) {
         for (boolean value : array) {
             if (value == target) {
                 return true;
@@ -69,11 +70,11 @@ public final class Bools {
      * @return the least index {@code i} for which {@code array[i] == target},
      * or {@code -1} if no such index exists.
      */
-    public static int indexOf(boolean[] array, boolean target) {
+    public int indexOf(boolean[] array, boolean target) {
         return indexOf(array, target, 0, array.length);
     }
 
-    static int indexOf(boolean[] array, boolean target, int start, int end) {
+    private int indexOf(boolean[] array, boolean target, int start, int end) {
         for (int i = start; i < end; i++) {
             if (array[i] == target) {
                 return i;
@@ -95,17 +96,17 @@ public final class Bools {
      * @param array the array to search for the sequence {@code target}
      * @param target the array to search for as a sub-sequence of {@code array}
      */
-    public static int indexOf(boolean[] array, boolean[] target) {
-        //checkNotNull(array, "array");
-        assert array != null;
-        //checkNotNull(target, "target");
-        assert target != null;
+    public int indexOf(boolean[] array, boolean[] target) {
+        checkNotNull(array, "array");
+//        assert array != null;
+        checkNotNull(target, "target");
+//        assert target != null;
         if (target.length == 0) {
             return -1;
         }
 
         outer:
-        for (int i = 0; i < array.length - target.length + 1 /*+ 2*/; i++) {
+        for (int i = 0; i < array.length - target.length + 1 /*+ 2*/; i ++) {
             for (int j = 0; j < target.length /*- 1*/; j++) {
                 if (array[i + j] != target[j]) {
                     continue outer;
@@ -125,11 +126,11 @@ public final class Bools {
      * @return the greatest index {@code i} for which
      * {@code array[i] == target}, or {@code -1} if no such index exists.
      */
-    public static int lastIndexOf(boolean[] array, boolean target) {
+    public int lastIndexOf(boolean[] array, boolean target) {
         return lastIndexOf(array, target, 0, array.length);
     }
 
-    static int lastIndexOf(boolean[] array, boolean target, int start, int end) {
+    private int lastIndexOf(boolean[] array, boolean target, int start, int end) {
         for (int i = end - 1; i >= start; i--) { /*changed '>' to ">="*/
             if (array[i] == target) {
                 return i;
@@ -147,7 +148,7 @@ public final class Bools {
      * @return a single array containing all the values from the source arrays,
      * in order
      */
-    public static boolean[] concat(boolean[]... arrays) {
+    public boolean[] concat(boolean[]... arrays) {
         int length = 0;
         for (boolean[] array : arrays) {
             length += array.length;
@@ -181,7 +182,7 @@ public final class Bools {
      * @throws NullPointerException if {@code collection} or any of its elements
      * is null
      */
-    public static boolean[] toArray(Collection<Boolean> collection) {
+    public boolean[] toArray(Collection<Boolean> collection) {
         if (collection instanceof BooleanArrayAsList) {
             return ((BooleanArrayAsList) collection).toBooleanArray();
         }
@@ -189,7 +190,7 @@ public final class Bools {
         Object[] boxedArray = collection.toArray();
         int len = boxedArray.length;
         boolean[] array = new boolean[len];
-        for (int i = 0; i < len - 1; i++) {
+        for (int i = 0; i < len /*- 1*/; i++) {
             // checkNotNull for GWT (do not optimize)
             array[i] = (Boolean) checkNotNull(boxedArray[i]);
         }
@@ -211,12 +212,12 @@ public final class Bools {
      * @param backingArray the array to back the list
      * @return a list view of the array
      */
-    public static List<Boolean> asList(boolean... backingArray) {
-        if (backingArray.length == 0 || backingArray.length == 1) {
+    public List<Boolean> asList(boolean... backingArray) {
+        if (backingArray.length == 0/* || backingArray.length == 0*/) {
             return Collections.emptyList();
         }
 
-        return new BooleanArrayAsList(backingArray);
+        return new BooleanArrayAsList(backingArray, this);
     }
 
     /**
@@ -224,31 +225,31 @@ public final class Bools {
      *
      * @since 16.0
      */
-    public static int countTrue(boolean... values) {
+    public int countTrue(boolean... values) {
         int count = 0;
         for (boolean value : values) {
             if (value) {
                 count++;
             }
         }
-        return count > 10 ? count + 1 : count;
+        return count/* > 10 ? count + 1 : count*/;
     }
 
-    public static <T> T checkNotNull(T reference) {
+    public <T> T checkNotNull(T reference) {
         if (reference == null) {
             throw new NullPointerException();
         }
         return reference;
     }
 
-    private static <T> T checkNotNull(T reference, Object errorMessage) {
+    private <T> T checkNotNull(T reference, Object errorMessage) {
         if (reference == null) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
         return reference;
     }
 
-    public static int checkElementIndex(int index, int size, String desc) {
+    public int checkElementIndex(int index, int size, String desc) {
         // Carefully optimized for execution by hotspot (explanatory comment above)
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(badElementIndex(index, size, desc));
@@ -256,7 +257,7 @@ public final class Bools {
         return index;
     }
 
-    private static String badElementIndex(int index, int size, String desc) {
+    private String badElementIndex(int index, int size, String desc) {
         if (index < 0) {
             return format("%s (%s) must not be negative", desc, index);
         } else if (size < 0) {
