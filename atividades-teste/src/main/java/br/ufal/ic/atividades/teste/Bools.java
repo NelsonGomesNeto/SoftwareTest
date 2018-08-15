@@ -7,7 +7,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public final class Bools {
+public class Bools {
 
     public Bools() {
     }

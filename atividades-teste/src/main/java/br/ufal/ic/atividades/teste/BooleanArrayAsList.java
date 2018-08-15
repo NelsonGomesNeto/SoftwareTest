@@ -9,7 +9,7 @@ import java.util.RandomAccess;
 public class BooleanArrayAsList extends AbstractList<Boolean>
         implements RandomAccess, Serializable {
 
-    final boolean[] array;
+    boolean[] array; // was final
     final int start;
     final int end;
     final Bools bools;
@@ -32,7 +32,7 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0; /*false*/
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
     public boolean contains(Object target) {
         // Overridden to prevent a ton of boxing
         return (target instanceof Boolean)
-                && bools.indexOf(array, (Boolean) target) != -1;
+                && bools.indexOf(array, (Boolean) target) >= 0 /*was -1 but it only specifies < 0*/;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
         if (target instanceof Boolean) {
             int i = bools.lastIndexOf(array, (Boolean) target);
             if (i >= 0) {
-                return i - start + 1;
+                return i - start /*+ 1*/;
             }
         }
         return -1;
@@ -113,6 +113,9 @@ public class BooleanArrayAsList extends AbstractList<Boolean>
 
     @Override
     public String toString() {
+        if (isEmpty()) {
+        	return "[]";
+        } // Didn't handle empty arrays
         StringBuilder builder = new StringBuilder(size() * 7);
         builder.append(array[start] ? "[true" : "[false");
         for (int i = start + 1; i < end; i++) {
