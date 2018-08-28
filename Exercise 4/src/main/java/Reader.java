@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Reader {
@@ -18,8 +19,14 @@ public class Reader {
         while ((size = in.available()) != 0) {
             byte[] buff = new byte[size];
 
+            int read;
             while (size > 0) {
-                int read = in.read(buff);
+                try {
+                    read = in.read(buff);
+                } catch (IOException ex) {
+                    read = 0;
+                }
+                System.out.println("read: " + read);
                 for (byte b: buff)
                     bytes.add(b);
                 buff = new byte[size - read];
@@ -54,7 +61,16 @@ public class Reader {
 
         @Override
         public int read(byte[] buff) throws IOException {
-            int size = buff.length < 2 ? buff.length : buff.length - 1;
+
+            Random random = new Random();
+
+            int size = Math.abs(random.nextInt() % buff.length) + 1;
+
+            if (size > 1000) {
+                throw new IOException();
+            }
+
+//            int size = buff.length < 2 ? buff.length : buff.length - 1;
 
             byte[] myBytes = new byte[size];
             int read = super.read(myBytes);
@@ -67,6 +83,11 @@ public class Reader {
         @Override
         public int available() {
             if (size == 0) return(0);
+
+            Random random = new Random();
+
+            int toRead = (Math.abs(random.nextInt()));
+
             int result = (int) Math.min(3, size);
             size -= result;
             return(result);
