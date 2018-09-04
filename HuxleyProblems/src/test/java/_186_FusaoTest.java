@@ -64,4 +64,8 @@ public class _186_FusaoTest {
 			)
 		);
 	}
+
+	@Test
+	void randomTests() {
+	}
 }
