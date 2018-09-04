@@ -47,7 +47,7 @@ public class _186_FusaoTest {
 				() -> assertTrue(disjointSet.isSameSet(1, 1), "Element 1 isn't in it's own set"),
 				() -> assertTrue(disjointSet.isSameSet(2, 2), "Element 2 isn't in it's own set")
 			),
-			() -> assertAll("Merging is faling",
+			() -> assertAll("Merging is failing",
 				() -> disjointSet.merge(0, 1),
 				() -> assertEquals(2, disjointSet.setSize(0), "0 should have size 2"),
 				() -> assertEquals(2, disjointSet.setSize(1), "1 should have size 2"),
