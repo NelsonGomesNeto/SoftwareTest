@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
 
 public class _186_FusaoTest {
 
@@ -66,6 +63,8 @@ public class _186_FusaoTest {
 	}
 
 	@Test
-	void randomTests() {
+	void randomTests() throws IOException, InterruptedException {
+		String answer = NelsonOracle.getAnswer("./src/main/resources/test.cpp", "Miau");
+		System.out.println(answer);
 	}
 }
