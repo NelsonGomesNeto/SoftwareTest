@@ -44,7 +44,7 @@ public class HuxleyCode {
 		Scanner scanner = new Scanner(System.in);
 		int n = scanner.nextInt(), m = scanner.nextInt();
 
-		ArrayList<ArrayList<Node>> graph = new ArrayList<>();
+		ArrayList<ArrayList<Node>> graph = new ArrayList<>(n);
 		for (int i = 0; i <= n; i ++) graph.add(new ArrayList<>());
 
 		for (int i = 0; i < m; i ++) {

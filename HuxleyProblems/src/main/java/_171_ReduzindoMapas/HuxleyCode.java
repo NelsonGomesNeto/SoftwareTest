@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
-public class HuxleyCode { // 171
+public class HuxleyCode {
 
 	public static class Node implements Comparable {
 		Integer cost, vertex;
@@ -42,8 +42,7 @@ public class HuxleyCode { // 171
 			visited[node.vertex] = true;
 
 			totalCost += node.cost;
-			for (Node v: graph.get(node.vertex))
-				priorityQueue.add(v);
+			priorityQueue.addAll(graph.get(node.vertex));
 		}
 		return(totalCost);
 	}
