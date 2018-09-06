@@ -1,4 +1,4 @@
-package _186_Fusao;
+package _160_Gincana;
 
 import java.util.Scanner;
 
@@ -31,6 +31,7 @@ public class HuxleyCode {
 				parent[u] = parent[v];
 				parent[v] = aux;
 			}
+			disjointSets --;
 			parent[v] += parent[u];
 			parent[u] = v;
 		}
@@ -40,17 +41,20 @@ public class HuxleyCode {
 		}
 	}
 
+	static int disjointSets;
+
 	public static void main(String args[]) {
 		Scanner scanner = new Scanner(System.in);
-		int banks = scanner.nextInt(), operations = scanner.nextInt();
-		DisjointSet disjointSet = new DisjointSet(banks + 1);
-		while (operations > 0) {
-			char operation = scanner.next().charAt(0); int u = scanner.nextInt(), v = scanner.nextInt();
-			if (operation == 'C')
-				System.out.println(disjointSet.isSameSet(u, v) ? "S" : "N");
-			else
-				disjointSet.merge(u, v);
-			operations --;
+		int friends = scanner.nextInt(), relations = scanner.nextInt();
+		DisjointSet disjointSet = new DisjointSet(friends + 1);
+		disjointSets = friends;
+
+		int u, v;
+		for (int i = 0; i < relations; i ++) {
+			u = scanner.nextInt(); v = scanner.nextInt();
+			disjointSet.merge(u, v);
 		}
+
+		System.out.println(disjointSets);
 	}
 }

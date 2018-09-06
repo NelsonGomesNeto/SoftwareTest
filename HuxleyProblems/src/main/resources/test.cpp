@@ -3,6 +3,6 @@
 int main()
 {
     char s[100]; scanf("%s", s);
-    printf("%s\n", s);
+    printf("LIVE: %s\n", s);
     return(0);
 }

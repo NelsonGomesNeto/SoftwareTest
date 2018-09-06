@@ -1,21 +1,31 @@
 import _186_Fusao.HuxleyCode;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class _186_FusaoTest {
 
-	private String basePath = "./src/test/resources/_186_Fusao/";
+	private static final String basePath = "./src/test/resources/_186_Fusao/";
 	private String ls = System.lineSeparator();
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static Random random = new Random();
+	private static final int testCases = 10;
+	private static final long seed = 343;
+	private static final int maxSize = (int) 1e3;
+
+	@BeforeAll
+	static void setupRandom() { random.setSeed(seed); }
 
 	@BeforeEach
-	void setup() {
-		System.setOut(new PrintStream(outputStream));
-	}
+	void setup() { System.setOut(new PrintStream(outputStream)); }
 
 	@Test
 	void example() throws FileNotFoundException {
@@ -62,9 +72,31 @@ public class _186_FusaoTest {
 		);
 	}
 
-	@Test
+	private void generateInput() throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./src/main/resources/in"));
+		Integer banks = random.nextInt(maxSize) + 1, operations = random.nextInt(maxSize) + 1;
+		bufferedWriter.write(banks.toString() + " " + operations.toString() + "\n");
+		for (int i = 0; i < operations; i ++) {
+			Character operation = random.nextBoolean() ? 'C' : 'F';
+			Integer u = random.nextInt(banks) + 1, v = random.nextInt(banks) + 1;
+			bufferedWriter.write(operation.toString() + " " + u.toString() + " " + v.toString() + "\n");
+		}
+		bufferedWriter.close();
+	}
+
+	@RepeatedTest(testCases)
 	void randomTests() throws IOException, InterruptedException {
-		String answer = NelsonOracle.getAnswer("./src/main/resources/test.cpp", "Miau");
-		System.out.println(answer);
+		NelsonOracle oracle = new NelsonOracle("./src/main/resources/_186_FusaoOracle.c");
+
+		generateInput();
+		final String oracleAnswer = oracle.getAnswer();
+
+		System.setIn(new FileInputStream("./src/main/resources/in"));
+		_186_Fusao.HuxleyCode.main(null);
+		final String myAnswer = outputStream.toString();
+
+		String input = oracle.getStringFromFile("./src/main/resources/in");
+
+		assertEquals(oracleAnswer, myAnswer, "Failed test case of input: <" + input + ">");
 	}
 }
