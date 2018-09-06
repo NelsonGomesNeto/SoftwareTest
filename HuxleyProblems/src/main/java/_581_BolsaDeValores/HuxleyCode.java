@@ -8,9 +8,9 @@ public class HuxleyCode {
 	private static int[] value;
 	private static long[][] dp;
 
-	private static long maxProfit(int i, int bought) {
+	private static long maxProfit() {
 		dp[n][0] = dp[n][1] = 0;
-		for (i = n - 1; i >= 0; i --) {
+		for (int i = n - 1; i >= 0; i --) {
 			dp[i][0] = Math.max(dp[i + 1][1] - (value[i] + c), dp[i + 1][0]);
 			dp[i][1] = Math.max(dp[i + 1][0] + value[i], dp[i + 1][1]);
 		}
@@ -28,6 +28,6 @@ public class HuxleyCode {
 			dp[i][0] = dp[i][1] = -1;
 		}
 
-		System.out.println(maxProfit( 0, 0));
+		System.out.println(maxProfit());
 	}
 }
