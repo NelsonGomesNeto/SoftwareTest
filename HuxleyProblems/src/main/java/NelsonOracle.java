@@ -1,21 +1,32 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 public class NelsonOracle {
 
-    public static String getAnswer(String oraclePath, String input) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec("g++ " + oraclePath + " -o ./src/main/resources/run.exe");
-        while (p.waitFor()!=0);
-        ProcessBuilder processBuilder = new ProcessBuilder("./src/main/resources/run.exe");
-        Process process = processBuilder.start();
-//        Process process = Runtime.getRuntime().exec("./src/main/resources/run.exe");
-        process.getOutputStream().write(input.getBytes());
-	    while (process.waitFor()!=0);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        bufferedReader.lines().forEach(stringBuilder::append);
-        return(stringBuilder.toString());
+	String getStringFromFile(String filePath) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(filePath));
+		StringBuilder stringBuilder = new StringBuilder();
+		if (!reader.ready()) return("");
+		int r;
+		while ((r = reader.read()) != -1)
+			stringBuilder.append((char) r);
+		reader.close();
+		return(stringBuilder.toString());
+	}
+
+	NelsonOracle(String oraclePath) throws InterruptedException, IOException {
+		Process compile = Runtime.getRuntime().exec("g++ " + oraclePath + " -o ./src/main/resources/run.exe");
+		compile.waitFor();
+	}
+
+    String getAnswer() throws IOException, InterruptedException {
+		ProcessBuilder processBuilder = new ProcessBuilder("./src/main/resources/run.exe");
+	    processBuilder = processBuilder.redirectInput(new File("./src/main/resources/in"));
+		processBuilder = processBuilder.redirectOutput(new File("./src/main/resources/out"));
+
+	    Process run = processBuilder.start();
+	    run.waitFor();
+
+	    return(getStringFromFile("./src/main/resources/out"));
     }
 }
