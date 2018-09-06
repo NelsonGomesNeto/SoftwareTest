@@ -9,22 +9,19 @@ public class HuxleyCode {
 	private static long[][] dp;
 
 	private static long maxProfit(int i, int bought) {
-		if (i == n) return(0);
-
-		if (dp[i][bought] == -1) {
-			long ans = maxProfit(i + 1, bought);
-			if (bought == 0) ans = Math.max(ans, maxProfit(i + 1, 1) - value[i] - c);
-			else ans = Math.max(ans, maxProfit(i + 1, 0) + value[i]);
-			dp[i][bought] = ans;
+		dp[n][0] = dp[n][1] = 0;
+		for (i = n - 1; i >= 0; i --) {
+			dp[i][0] = Math.max(dp[i + 1][1] - (value[i] + c), dp[i + 1][0]);
+			dp[i][1] = Math.max(dp[i + 1][0] + value[i], dp[i + 1][1]);
 		}
-		return(dp[i][bought]);
+		return(dp[0][0]);
 	}
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 
 		n = scanner.nextInt(); c = scanner.nextInt();
-		dp = new long[n][2];
+		dp = new long[n + 1][2];
 		value = new int[n];
 		for (int i = 0; i < n; i ++) {
 			value[i] = scanner.nextInt();
