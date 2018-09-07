@@ -20,13 +20,9 @@ public class ConfigApp extends Configuration {
     
     private String university;
     private String state;
+    private int port;
     
     @Valid
     @NotNull
     private DataSourceFactory database = new DataSourceFactory();
-
-    @JsonProperty("database")
-    public DataSourceFactory getDataSourceFactory() {
-        return database;
-    }
 }

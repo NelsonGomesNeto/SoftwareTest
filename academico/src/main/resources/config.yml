@@ -1,5 +1,6 @@
 university: UFAL
 state: Alagoas
+port: 1
 
 server:
   type: simple
@@ -28,13 +29,4 @@ database:
   properties:
     charSet: UTF-8
     hibernate.dialect: org.hibernate.dialect.H2Dialect
-    hibernate.hbm2ddl.auto: update
-  maxWaitForConnection: 1s
-  # the SQL query to run when validating a connection's liveness
-  validationQuery: "/* MyApplication Health Check */ SELECT 1"
-  # the minimum number of connections to keep open
-  minSize: 8
-  # the maximum number of connections to keep open
-  maxSize: 32
-  # whether or not idle connections should be validated
-  checkConnectionWhileIdle: false
+    hibernate.hbm2ddl.auto: create-drop #update
