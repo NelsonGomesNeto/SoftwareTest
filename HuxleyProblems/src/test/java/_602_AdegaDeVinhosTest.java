@@ -27,13 +27,13 @@ public class _602_AdegaDeVinhosTest {
 
 	@Test
 	void big() {
-		String result = assertTimeout(Duration.ofSeconds(1), () -> {
+		String result = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
 			System.setIn(new FileInputStream(basePath + "big.in"));
 			_602_AdegaDeVinhos.HuxleyCode.main(null);
 			return(outputStream.toString());
 		});
 
-		String expected = "656" + ls;
+		String expected = "1089299" + ls;
 		assertEquals(expected, result, "Failing big test case");
 	}
 }

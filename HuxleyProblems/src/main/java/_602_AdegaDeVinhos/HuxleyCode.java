@@ -10,7 +10,10 @@ public class HuxleyCode {
 	private static int solve(int left, int right, int years) {
 		if (left > right) return(0);
 
-		return(Math.max(price[left] * years + solve(left + 1, right, years + 1), price[right] * years + solve(left, right - 1, years + 1)));
+		if (dp[left][right] == -1)
+			dp[left][right] = Math.max(price[left] * years + solve(left + 1, right, years + 1), price[right] * years + solve(left, right - 1, years + 1));
+
+		return(dp[left][right]);
 	}
 
 	public static void main(String[] args) {

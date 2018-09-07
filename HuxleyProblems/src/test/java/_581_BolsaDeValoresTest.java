@@ -29,8 +29,8 @@ public class _581_BolsaDeValoresTest {
 	}
 
 	@Test
-	void big() throws FileNotFoundException {
-		String result = assertTimeout(Duration.ofSeconds(1), () -> {
+	void big() {
+		String result = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
 			System.setIn(new FileInputStream(basePath + "big.in"));
 			_581_BolsaDeValores.HuxleyCode.main(null);
 			return(outputStream.toString());
