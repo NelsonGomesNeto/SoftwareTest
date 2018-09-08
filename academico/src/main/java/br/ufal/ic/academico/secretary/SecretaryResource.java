@@ -1,7 +1,7 @@
-package br.ufal.ic.academico.course;
+package br.ufal.ic.academico.secretary;
 
-import br.ufal.ic.academico.subject.Subject;
-import br.ufal.ic.academico.subject.SubjectDAO;
+import br.ufal.ic.academico.course.Course;
+import br.ufal.ic.academico.course.CourseDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,25 +12,24 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-@Path("course")
+@Path("secretary")
 @Slf4j
 @RequiredArgsConstructor
 @Produces(MediaType.APPLICATION_JSON)
-public class CourseResource {
+public class SecretaryResource {
 
+	private final SecretaryDAO secretaryDAO;
 	private final CourseDAO courseDAO;
-	private final SubjectDAO subjectDAO;
 
 	@GET
 	@UnitOfWork
 	public Response getAll() {
 
 		log.info("getAll");
-		ArrayList<Course> courses = courseDAO.getAll();
-		return(Response.ok(courses).build());
+		ArrayList<Secretary> secretaries = secretaryDAO.getAll();
+		return(Response.ok(secretaries).build());
 	}
 
 	@GET
@@ -39,29 +38,29 @@ public class CourseResource {
 	public Response getById(@PathParam("id") Long id) {
 
 		log.info("getById: id={}", id);
-		Course p = courseDAO.get(id);
-		return(Response.ok(p).build());
+		Secretary s = secretaryDAO.get(id);
+		return(Response.ok(s).build());
 	}
 
 	@POST
 	@UnitOfWork
 	@Consumes("application/json")
-	public Response save(CourseDTO entity) {
+	public Response save(SecretaryDTO entity) {
 
 		log.info("save: {}", entity);
-		ArrayList<Subject> subjects = new ArrayList<>();
-		entity.subjectsIds.forEach((id) -> subjects.add(subjectDAO.get(id)));
-		Course c = new Course(entity.name, subjects);
-		return(Response.ok(courseDAO.persist(c)).build());
+		ArrayList<Course> courses = new ArrayList<>();
+		entity.coursesIds.forEach((id) -> courses.add(courseDAO.get(id)));
+		Secretary s = new Secretary(entity.degreeLevel, courses);
+		return(Response.ok(secretaryDAO.persist(s)).build());
 	}
 
 	@Getter
 	@AllArgsConstructor
 	@RequiredArgsConstructor
 	@ToString
-	public static class CourseDTO {
+	public static class SecretaryDTO {
 
-		private String name;
-		private ArrayList<Long> subjectsIds;
+		private String degreeLevel;
+		ArrayList<Long> coursesIds;
 	}
 }

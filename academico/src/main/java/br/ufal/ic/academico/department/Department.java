@@ -4,10 +4,7 @@ import br.ufal.ic.academico.secretary.Secretary;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -19,6 +16,7 @@ public class Department {
 	private Long id;
 
 	private String name;
+	@OneToOne
 	private Secretary graduate, postgraduate;
 
 	public Department(String name, Secretary graduate, Secretary postgraduate) {

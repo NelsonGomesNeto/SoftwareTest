@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Path("subject")
@@ -69,6 +70,6 @@ public class SubjectResource {
 
 		private String name, code;
 		private Integer credits, requiredCredits;
-		private ArrayList<Integer> requiredSubjectsIds;
+		private ArrayList<Serializable> requiredSubjectsIds;
 	}
 }

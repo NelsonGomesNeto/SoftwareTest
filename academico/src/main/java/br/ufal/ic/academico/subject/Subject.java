@@ -3,11 +3,9 @@ package br.ufal.ic.academico.subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,7 +18,8 @@ public class Subject {
 
 	private String name, code;
 	private Integer credits, requiredCredits;
-	private ArrayList<Subject> requiredSubjects;
+	@OneToMany(cascade = {CascadeType.ALL})
+	private List<Subject> requiredSubjects;
 
 	public Subject(String name, String code, Integer credits, Integer requiredCredits, ArrayList<Subject> requiredSubjects) {
 		this.name = name;
