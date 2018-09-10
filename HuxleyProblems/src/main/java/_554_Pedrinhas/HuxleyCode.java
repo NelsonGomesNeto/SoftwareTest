@@ -25,7 +25,7 @@ public class HuxleyCode {
 		public void merge(int v, int u) {
 			v = root(v);
 			u = root(u);
-			if (v == u) return;
+			// if (v == u) return; never gonna happen since I'm verifying this previously
 			if (parent[u] < parent[v]) {
 				int aux = parent[u];
 				parent[u] = parent[v];

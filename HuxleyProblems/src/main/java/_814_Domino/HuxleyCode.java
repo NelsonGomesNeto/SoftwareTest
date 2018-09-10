@@ -8,16 +8,16 @@ public class HuxleyCode {
 	static int[] pieces = new int[7];
 
 	private static boolean conex() {
-		for (int i = 0; i < 7; i ++)
-			if (pieces[i] > 0) {
-				boolean[] visited = new boolean[7]; for (int j = 0; j < 7; j ++) visited[j] = false;
-				conexAux(i, visited);
-				for (int j = 0; j < 7; j ++)
-					if (pieces[j] > 0 && !visited[j])
-						return(false);
-				return(true);
-			}
-		return(false);
+		int i = 0;
+		// for (int i = 0; /*i < 7*/; i ++) // since there's always gonna be a connection
+		while (pieces[i] == 0) i ++;
+		boolean[] visited = new boolean[7]; for (int j = 0; j < 7; j ++) visited[j] = false;
+		conexAux(i, visited);
+		for (int j = 0; j < 7; j ++)
+			if (pieces[j] > 0 && !visited[j])
+				return(false);
+		return(true);
+		// return(false); it's always gonna have at least on connection, since it's a undirected graph
 	}
 
 	private static void conexAux(int u, boolean[] visited) {

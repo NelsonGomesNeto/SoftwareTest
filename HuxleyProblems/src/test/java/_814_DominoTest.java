@@ -29,7 +29,7 @@ public class _814_DominoTest {
 	@BeforeEach
 	void resetOutput() { outputStream.reset(); }
 
-	@RepeatedTest(1)
+	@RepeatedTest(2)
 	void repeatedTest(RepetitionInfo repetitionInfo) throws IOException {
 		int i = repetitionInfo.getCurrentRepetition() - 1;
 		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);

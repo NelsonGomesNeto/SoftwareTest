@@ -43,7 +43,10 @@ public class _817_ChuvaTest {
 
 	private void generateInput() throws IOException {
 		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(NelsonOracle.in));
-		// TODO
+		Integer n = random.nextInt(100000 - 1) + 1, hi = 1000000000;
+		bufferedWriter.write(n.toString() + "\n");
+		for (int i = 0; i < n; i ++)
+			bufferedWriter.write(Integer.toString(random.nextInt(hi - 1) + 1) + "\n");
 		bufferedWriter.close();
 	}
 

@@ -30,7 +30,7 @@ public class _1997_FreteTest {
 		String out2 = outputStream.toString();
 
 		assertAll("Failing example test cases",
-			() -> assertEquals(expected1 , out1, "Failed test case 1"),
-			() -> assertEquals(expected2, out2, "Failed test case 2"));
+			() -> assertEquals(InOutReader.uniformString(expected1), InOutReader.uniformString(out1), "Failed test case 1"),
+			() -> assertEquals(InOutReader.uniformString(expected2), InOutReader.uniformString(out2), "Failed test case 2"));
 	}
 }

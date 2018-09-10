@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class HuxleyCode {
 
 	private static int binarySearch(int[] array, int lo, int hi, int target) {
-		if (lo >= hi) return(array[lo] == target ? lo : -1);
+		if (lo >= hi) return(lo < array.length && array[lo] == target ? lo : -1);
 		int mid = (lo + hi) / 2;
 		if (target <= array[mid]) return(binarySearch(array, lo, mid, target));
 		return(binarySearch(array, mid + 1, hi, target));

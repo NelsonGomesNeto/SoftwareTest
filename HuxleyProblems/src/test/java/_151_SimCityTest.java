@@ -37,7 +37,7 @@ public class _151_SimCityTest {
 		int i = repetitionInfo.getCurrentRepetition() - 1;
 		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
 		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
-		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(4000), () -> {
 			_151_SimCity.HuxleyCode.main(null);
 			return(InOutReader.uniformString(outputStream.toString()));
 		});
@@ -67,7 +67,7 @@ public class _151_SimCityTest {
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream(NelsonOracle.in));
-		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(4000), () -> {
 			_151_SimCity.HuxleyCode.main(null);
 			return(InOutReader.uniformString(outputStream.toString()));
 		});

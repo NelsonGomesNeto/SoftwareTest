@@ -31,7 +31,7 @@ public class HuxleyCode {
 
 		private static int getNumber(ArrayDeque<Character> treeQueue) {
 			int number = 0;
-			while (treeQueue.peek() >= '0' && treeQueue.peek() <= '9') {
+			while (treeQueue.peek() >= '0') { // && treeQueue.peek() <= '9') { Unnecessary
 				number = number * 10 + (treeQueue.pop() - '0');
 			}
 			return(number);
@@ -39,7 +39,7 @@ public class HuxleyCode {
 
 		private static Tree buildTree(ArrayDeque<Character> treeQueue) {
 			Tree tree = null;
-			if (treeQueue.isEmpty()) return (tree);
+			// if (treeQueue.isEmpty()) return (tree); Unnecessary ')' will tell us that the tree have ended
 
 			if (treeQueue.pop() == '(') {
 				if (treeQueue.peek() == ')') {

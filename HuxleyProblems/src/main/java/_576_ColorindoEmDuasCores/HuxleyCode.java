@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class HuxleyCode {
 
 	public static boolean bicolorable(ArrayList<ArrayList<Integer>> graph, int[] color, int u, int now) {
-		if (color[u] != -1 && color[u] == 1 - now) return(false);
+		if (color[u] == 1 - now) return(false);
 		color[u] = now;
 		for (Integer v: graph.get(u))
 			if (!bicolorable(graph, color, v, 1 - now)) return(false);

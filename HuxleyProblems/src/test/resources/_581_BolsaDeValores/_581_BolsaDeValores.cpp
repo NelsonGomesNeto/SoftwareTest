@@ -1,52 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#define memCard DP[notAble][i]
+#include <bits/stdc++.h>
+using namespace std;
+int n, c, dp[200000][2];
 
-int acoes, custo;
-int DP[2][(int) 2e5];
-int ac[(int) 2e5];
-
-int max(int a, int b)
+int solve(int cot[], int i, int b)
 {
-  return(a > b ? a : b);
-}
-
-int dp(int i, int notAble)
-{
-  if (i == acoes)
+  if (i == n) return(0);
+  if (dp[i][b] == -1)
   {
-    return(0);
+    int ans = solve(cot, i + 1, b);
+    if (!b) ans = max(ans, solve(cot, i + 1, 1) - cot[i] - c);
+    if (b) ans = max(ans, cot[i] + solve(cot, i + 1, 0));
+    dp[i][b] = ans;
   }
-  if (memCard == -1)
-  {
-    int aux;
-    memCard = dp(i + 1, notAble); //N?o faz nada
-    if (notAble == 0)
-    {
-      aux = dp(i + 1, 1) - ac[i] - custo; //Compra a a??o
-      memCard = max(memCard, aux); //Escolhe o melhor
-    }
-    if (notAble == 1)
-    {
-      aux = dp(i + 1, 0) + ac[i]; //Vende a a??o
-      memCard = max(memCard, aux); //Escolhe o melhor
-    }
-  }
-  return(memCard); //Retorna o valor m?ximo
+  return(dp[i][b]);
 }
 
 int main()
 {
-  scanf("%d %d", &acoes, &custo);
+  scanf("%d %d", &n, &c);
+  int cot[n]; for (int i = 0; i < n; i ++) scanf("%d", &cot[i]);
 
-  int i;
-  memset(DP, -1, sizeof(DP));
-
-  for (i = 0; i < acoes; i ++)
-    scanf("%d", &ac[i]);
-
-  int ans = dp(0, 0);
+  memset(dp, -1, sizeof(dp));
+  int ans = solve(cot, 0, 0);
   printf("%d\n", ans);
   return(0);
 }

@@ -17,7 +17,7 @@ public class _581_BolsaDeValoresTest {
 	private static Random random = new Random();
 
 	@BeforeAll
-	static void setupAll() throws IOException, InterruptedException { ///home/nelsongomesneto/Documents/SoftwareTesting/HuxleyProblems/_581_BolsaDeValores.cpp
+	static void setupAll() throws IOException, InterruptedException {
 		oracle = new NelsonOracle(basePath + "_581_BolsaDeValores.cpp");
 		random.setSeed(seed);
 		in = new File(basePath + "in/").list();
@@ -43,7 +43,7 @@ public class _581_BolsaDeValoresTest {
 
 	private void generateInput() throws IOException {
 		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(NelsonOracle.in));
-		Integer n = random.nextInt((int) 1e5 - 1) + 1, c = random.nextInt(30);
+		Integer n = random.nextInt((int) 2e4 - 1) + 1, c = random.nextInt(30);
 		bufferedWriter.write(n.toString() + " " + c.toString() + "\n");
 		for (int i = 0; i < n; i ++)
 			bufferedWriter.write(Integer.toString(random.nextInt(999) + 1) + (i < n - 1 ? " " : "\n"));

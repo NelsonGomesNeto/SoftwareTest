@@ -5,17 +5,12 @@ import java.util.Scanner;
 
 public class HuxleyCode {
 
-	public static class Node implements Comparable {
+	public static class Node {
 		Integer cost, vertex;
 
 		private Node(int cost, int vertex) {
 			this.cost = cost;
 			this.vertex = vertex;
-		}
-
-		@Override
-		public int compareTo(Object o) {
-			return this.cost.compareTo(((Node) o).cost);
 		}
 	}
 

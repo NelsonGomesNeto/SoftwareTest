@@ -21,7 +21,7 @@ public class _1860_ImpostoRealTest {
 		String expected = "10" + ls;
 		System.setIn(new FileInputStream(basePath + "example1.in"));
 		_1860_ImpostoReal.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+		assertEquals(InOutReader.uniformString(expected), InOutReader.uniformString(outputStream.toString()), "Failing example test case");
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class _1860_ImpostoRealTest {
 		String expected = "44" + ls;
 		System.setIn(new FileInputStream(basePath + "example2.in"));
 		_1860_ImpostoReal.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+		assertEquals(InOutReader.uniformString(expected), InOutReader.uniformString(outputStream.toString()), "Failing example test case");
 	}
 
 	@Test
@@ -37,6 +37,6 @@ public class _1860_ImpostoRealTest {
 		String expected = "102416336" + ls;
 		System.setIn(new FileInputStream(basePath + "big.in"));
 		_1860_ImpostoReal.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+		assertEquals(InOutReader.uniformString(expected), InOutReader.uniformString(outputStream.toString()), "Failing example test case");
 	}
 }

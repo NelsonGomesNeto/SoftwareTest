@@ -162,7 +162,7 @@ public class _538_SomaMaximaTest {
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream(NelsonOracle.in));
-		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(2000), () -> {
 			_538_SomaMaxima.HuxleyCode.main(null);
 			return(InOutReader.uniformString(outputStream.toString()));
 		});
