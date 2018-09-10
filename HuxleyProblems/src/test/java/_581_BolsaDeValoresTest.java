@@ -1,42 +1,69 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.time.Duration;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.*;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Random;
+
 public class _581_BolsaDeValoresTest {
 
-	private static final String ls = System.lineSeparator();
 	private static final String basePath = "./src/test/resources/_581_BolsaDeValores/";
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static String[] in, out;
+	private static NelsonOracle oracle;
+	private static final int seed = 343;
+	private static Random random = new Random();
 
-	@BeforeEach
-	void setup() {
+	@BeforeAll
+	static void setupAll() throws IOException, InterruptedException { ///home/nelsongomesneto/Documents/SoftwareTesting/HuxleyProblems/_581_BolsaDeValores.cpp
+		oracle = new NelsonOracle(basePath + "_581_BolsaDeValores.cpp");
+		random.setSeed(seed);
+		in = new File(basePath + "in/").list();
+		out = new File(basePath + "out/").list();
+		Arrays.sort(in); Arrays.sort(out);
 		System.setOut(new PrintStream(outputStream));
 	}
 
-	@Test
-	void example() throws FileNotFoundException {
-		String expected = "20" + ls;
-		System.setIn(new FileInputStream(basePath + "example.in"));
-		_581_BolsaDeValores.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+	@BeforeEach
+	void resetOutput() { outputStream.reset(); }
+
+	@RepeatedTest(3)
+	void repeatedTest(RepetitionInfo repetitionInfo) throws IOException {
+		int i = repetitionInfo.getCurrentRepetition() - 1;
+		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
+		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_581_BolsaDeValores.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+		assertEquals(expected, myAnswer, "Failing " + in[i] + " test case");
 	}
 
-	@Test
-	void big() {
-		String result = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
-			System.setIn(new FileInputStream(basePath + "big.in"));
+	private void generateInput() throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(NelsonOracle.in));
+		Integer n = random.nextInt((int) 1e5 - 1) + 1, c = random.nextInt(30);
+		bufferedWriter.write(n.toString() + " " + c.toString() + "\n");
+		for (int i = 0; i < n; i ++)
+			bufferedWriter.write(Integer.toString(random.nextInt(999) + 1) + (i < n - 1 ? " " : "\n"));
+		bufferedWriter.close();
+	}
+
+	@RepeatedTest(10)
+	void randomTest() throws IOException, InterruptedException {
+
+		generateInput();
+		final String oracleAnswer = oracle.getAnswer();
+
+		System.setIn(new FileInputStream(NelsonOracle.in));
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
 			_581_BolsaDeValores.HuxleyCode.main(null);
-			return(outputStream.toString());
+			return(InOutReader.uniformString(outputStream.toString()));
 		});
 
-		String expected = "15621471" + ls;
-		assertEquals(expected, result, "Failing example test case");
+		String input = InOutReader.getStringFromFile(NelsonOracle.in);
+
+		assertEquals(oracleAnswer, myAnswer, "Failed test case of input: <" + input + ">");
 	}
 }

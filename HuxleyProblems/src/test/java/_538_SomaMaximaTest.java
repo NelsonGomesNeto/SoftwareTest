@@ -1,29 +1,38 @@
 import _538_SomaMaxima.HuxleyCode;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class _538_SomaMaximaTest {
 
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	private String basePath = "./src/test/resources/_538_SomaMaxima/";
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static String basePath = "./src/test/resources/_538_SomaMaxima/";
 	private String path = basePath + "example.in";
 	private int[][] mat;
 	private int[][] accSum;
 	private int size;
+	private static NelsonOracle oracle;
+	private static final int seed = 343;
+	private static Random random = new Random();
+
+	@BeforeAll
+	static void setupAll() throws IOException, InterruptedException {
+		random.setSeed(seed);
+		System.setOut(new PrintStream(outputStream));
+		oracle = new NelsonOracle(basePath + "_538_SomaMaxima.cpp");
+	}
 
 	@BeforeEach
-	void setup() throws IOException {
-		System.setOut(new PrintStream(outputStream));
-		load();
+	void setup() {
+		outputStream.reset();
 	}
 
 	private void load() throws IOException {
@@ -56,8 +65,9 @@ public class _538_SomaMaximaTest {
 	}
 
 	@Test
-	void accumulatedSum() {
+	void accumulatedSum() throws IOException {
 		ArrayList<Executable> executables = new ArrayList<>();
+		load();
 		for (int ei = 0; ei < size; ei ++)
 			for (int ej = 0; ej < size; ej ++) {
 				int sum = 0;
@@ -71,8 +81,9 @@ public class _538_SomaMaximaTest {
 	}
 
 	@Test
-	void getSum() {
+	void getSum() throws IOException {
 		ArrayList<Executable> executables = new ArrayList<>();
+		load();
 		for (int li = 0; li < size; li ++)
 			for (int lj = 0; lj < size; lj ++)
 				for (int hi = li; hi < size; hi ++)
@@ -133,4 +144,32 @@ public class _538_SomaMaximaTest {
 					}
 		return(Integer.toString(maxSum) + System.lineSeparator());
 	}
+
+	private void generateInput() throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(NelsonOracle.in));
+		Integer n = random.nextInt(99) + 1;
+		bufferedWriter.write(n.toString() + "\n");
+		for (int i = 0; i < n; i ++)
+			for (int j = 0; j < n; j ++)
+				bufferedWriter.write(Integer.toString(127 - random.nextInt(254)) + (j <  n - 1 ? " " : "\n"));
+		bufferedWriter.close();
+	}
+
+	@RepeatedTest(10)
+	void randomTest() throws IOException, InterruptedException {
+
+		generateInput();
+		final String oracleAnswer = oracle.getAnswer();
+
+		System.setIn(new FileInputStream(NelsonOracle.in));
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_538_SomaMaxima.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+
+		String input = InOutReader.getStringFromFile(NelsonOracle.in);
+
+		assertEquals(oracleAnswer, myAnswer, "Failed test case of input: <" + input + ">");
+	}
+
 }

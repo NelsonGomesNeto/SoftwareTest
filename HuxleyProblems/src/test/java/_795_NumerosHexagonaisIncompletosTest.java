@@ -1,26 +1,37 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
+import java.time.Duration;
+import java.util.Arrays;
 
 public class _795_NumerosHexagonaisIncompletosTest {
 
-	private final String ls = System.lineSeparator();
 	private static final String basePath = "./src/test/resources/_795_NumerosHexagonaisIncompletos/";
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static String[] in, out;
+
+	@BeforeAll
+	static void setupAll() throws IOException, InterruptedException {
+		in = new File(basePath + "in/").list();
+		out = new File(basePath + "out/").list();
+		Arrays.sort(in); Arrays.sort(out);
+		System.setOut(new PrintStream(outputStream));
+	}
 
 	@BeforeEach
-	void setup() { System.setOut(new PrintStream(outputStream)); }
+	void resetOutput() { outputStream.reset(); }
 
-	@Test
-	void example() throws FileNotFoundException {
-		String expected = "1" + ls + "6" + ls + "13" + ls + "24" + ls;
-		System.setIn(new FileInputStream(basePath + "example.in"));
-		_795_NumerosHexagonaisIncompletos.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+	@RepeatedTest(2)
+	void repeatedTest(RepetitionInfo repetitionInfo) throws IOException {
+		int i = repetitionInfo.getCurrentRepetition() - 1;
+		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
+		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_795_NumerosHexagonaisIncompletos.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+		assertEquals(expected, myAnswer, "Failing " + in[i] + " test case");
 	}
 }
