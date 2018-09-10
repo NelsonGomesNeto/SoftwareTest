@@ -1,27 +1,67 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.*;
-import java.time.Duration;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.*;
+import java.util.Random;
+
 public class _241_OndeEstaOMarmoreTest {
 
-	private static final String ls = System.lineSeparator();
 	private static final String basePath = "./src/test/resources/_241_OndeEstaOMarmore/";
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static String[] in, out;
+	private static NelsonOracle oracle;
+	private static final int seed = 343;
+	private static Random random = new Random();
 
-	@BeforeEach
-	void setup() {
+	@BeforeAll
+	static void setupAll() throws IOException, InterruptedException {
+		oracle = new NelsonOracle(basePath + "_241_OndeEstaOMarmore.cpp");
+		random.setSeed(seed);
+		in = new File(basePath + "in/").list();
+		out = new File(basePath + "out/").list();
 		System.setOut(new PrintStream(outputStream));
 	}
 
-	@Test
-	void example() throws FileNotFoundException {
-		String expected = "CASE# 1:" + ls + "5 found at 4" + ls + "CASE# 2:" + ls + "2 not found" + ls + "3 found at 3" + ls;
-		System.setIn(new FileInputStream(basePath + "example.in"));
+	@BeforeEach
+	void resetOutput() { outputStream.reset(); }
+
+	@RepeatedTest(3)
+	void repeatedTest(RepetitionInfo repetitionInfo) throws IOException {
+		int i = repetitionInfo.getCurrentRepetition() - 1;
+		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
+		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
 		_241_OndeEstaOMarmore.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+		assertEquals(expected, InOutReader.uniformString(outputStream.toString()), "Failing " + in[i] + " test case");
+	}
+
+	private void generateInput() throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(NelsonOracle.in));
+		int limit = (int) 1e4;
+		Integer testCases = random.nextInt(63) + 1;
+		for (int t = 0; t < testCases; t ++) {
+
+			Integer n = random.nextInt(limit - 1) + 1, q = random.nextInt(limit - 1) + 1;
+			bufferedWriter.write(n.toString() + " " + q.toString() + "\n");
+			for (int i = 0; i < q + n; i ++)
+				bufferedWriter.write(Integer.toString(random.nextInt(limit)) + "\n");
+		}
+		bufferedWriter.write("0 0\n");
+		bufferedWriter.close();
+	}
+
+	@RepeatedTest(10)
+	void randomTest(RepetitionInfo repetitionInfo) throws IOException, InterruptedException {
+
+		generateInput();
+		final String oracleAnswer = oracle.getAnswer();
+
+		System.setIn(new FileInputStream(NelsonOracle.in));
+		_241_OndeEstaOMarmore.HuxleyCode.main(null);
+		final String myAnswer = InOutReader.uniformString(outputStream.toString());
+
+		String input = InOutReader.getStringFromFile(NelsonOracle.in);
+
+		assertEquals(oracleAnswer, myAnswer, "Failed test case " + repetitionInfo.getCurrentRepetition() + " of input");
 	}
 }

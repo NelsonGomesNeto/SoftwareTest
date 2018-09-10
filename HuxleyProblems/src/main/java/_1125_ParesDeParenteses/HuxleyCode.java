@@ -29,6 +29,6 @@ public class HuxleyCode {
 			if (i > 0) System.out.print(", ");
 			System.out.print(answer.get(i));
 		}
-		System.out.print("]\n");
+		System.out.print("]" + System.lineSeparator());
 	}
 }

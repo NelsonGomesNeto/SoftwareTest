@@ -1,18 +1,9 @@
 import java.io.*;
-import java.util.concurrent.TimeUnit;
 
 public class NelsonOracle {
 
-	String getStringFromFile(String filePath) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		StringBuilder stringBuilder = new StringBuilder();
-		if (!reader.ready()) return("");
-		int r;
-		while ((r = reader.read()) != -1)
-			stringBuilder.append((char) r);
-		reader.close();
-		return(stringBuilder.toString());
-	}
+	final static String in = "./src/main/resources/in";
+	final static String out = "./src/main/resources/out";
 
 	NelsonOracle(String oraclePath) throws InterruptedException, IOException {
 		Process compile = Runtime.getRuntime().exec("g++ " + oraclePath + " -o ./src/main/resources/run.exe");
@@ -27,6 +18,6 @@ public class NelsonOracle {
 	    Process run = processBuilder.start();
 	    run.waitFor();
 
-	    return(getStringFromFile("./src/main/resources/out"));
+	    return(InOutReader.getStringFromFile("./src/main/resources/out"));
     }
 }

@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -6,11 +7,16 @@ import java.io.*;
 
 public class _171_ReduzindoMapasTest {
 
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+	@BeforeAll
+	static void setupAll() {
+		System.setOut(new PrintStream(outputStream));
+	}
 
 	@BeforeEach
-	void setupOutputStream() {
-		System.setOut(new PrintStream(outputStream));
+	void resetOutput() {
+		outputStream.reset();
 	}
 
 	@Test
@@ -25,7 +31,7 @@ public class _171_ReduzindoMapasTest {
 		System.setIn(new FileInputStream("./src/test/resources/_171_ReduzindoMapas/example.in"));
 		String expected = "34" + System.lineSeparator();
 		_171_ReduzindoMapas.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing example test case");
+		assertEquals(InOutReader.uniformString(expected), InOutReader.uniformString(outputStream.toString()), "Failing example test case");
 	}
 
 	@Test
@@ -33,6 +39,6 @@ public class _171_ReduzindoMapasTest {
 		System.setIn(new FileInputStream("./src/test/resources/_171_ReduzindoMapas/big.in"));
 		String expected = "1441" + System.lineSeparator();
 		_171_ReduzindoMapas.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing big test case");
+		assertEquals(InOutReader.uniformString(expected), InOutReader.uniformString(outputStream.toString()), "Failing big test case");
 	}
 }

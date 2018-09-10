@@ -1,6 +1,7 @@
 package _151_SimCity;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -44,6 +45,7 @@ public class HuxleyCode {
     }
 
     public static void main(String args[]) {
+	    Locale.setDefault(Locale.forLanguageTag("en-us"));
         Scanner scanner = new Scanner(System.in);
 
         int n;
@@ -62,7 +64,7 @@ public class HuxleyCode {
 					graph.get(j).add(new Node(distance(point[i], point[j]), i));
 				}
 
-			System.out.printf("%.2f\n", prim(graph, 0, n));
+			System.out.printf("%.2f" + System.lineSeparator(), prim(graph, 0, n));
 		}
     }
 }

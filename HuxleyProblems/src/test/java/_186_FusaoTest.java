@@ -3,12 +3,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class _186_FusaoTest {
@@ -16,23 +14,27 @@ public class _186_FusaoTest {
 	private static final String basePath = "./src/test/resources/_186_Fusao/";
 	private String ls = System.lineSeparator();
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static NelsonOracle oracle;
 	private static Random random = new Random();
 	private static final int testCases = 10;
 	private static final long seed = 343;
 	private static final int maxSize = (int) 1e3;
 
 	@BeforeAll
-	static void setupRandom() { random.setSeed(seed); }
+	static void setupAll() throws IOException, InterruptedException {
+		oracle = new NelsonOracle(basePath + "_186_FusaoOracle.c");
+		random.setSeed(seed);
+	}
 
 	@BeforeEach
-	void setup() { System.setOut(new PrintStream(outputStream)); }
+	void resetOutput() { System.setOut(new PrintStream(outputStream)); }
 
 	@Test
 	void example() throws FileNotFoundException {
-		String expected = "N" + ls + "S" + ls + "S" + ls;
+		String expected = InOutReader.uniformString("N" + ls + "S" + ls + "S" + ls);
 		System.setIn(new FileInputStream(basePath + "example.in"));
 		_186_Fusao.HuxleyCode.main(null);
-		assertEquals(expected, outputStream.toString(), "Failing on example test case");
+		assertEquals(expected, InOutReader.uniformString(outputStream.toString()), "Failing on example test case");
 	}
 
 	@Test
@@ -86,16 +88,15 @@ public class _186_FusaoTest {
 
 	@RepeatedTest(testCases)
 	void randomTests() throws IOException, InterruptedException {
-		NelsonOracle oracle = new NelsonOracle("./src/main/resources/_186_FusaoOracle.c");
 
 		generateInput();
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream("./src/main/resources/in"));
 		_186_Fusao.HuxleyCode.main(null);
-		final String myAnswer = outputStream.toString();
+		final String myAnswer = InOutReader.uniformString(outputStream.toString());
 
-		String input = oracle.getStringFromFile("./src/main/resources/in");
+		String input = InOutReader.getStringFromFile("./src/main/resources/in");
 
 		assertEquals(oracleAnswer, myAnswer, "Failed test case of input: <" + input + ">");
 	}
