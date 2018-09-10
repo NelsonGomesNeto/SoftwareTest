@@ -3,6 +3,8 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Random;
 
 public class _241_OndeEstaOMarmoreTest {
@@ -20,6 +22,7 @@ public class _241_OndeEstaOMarmoreTest {
 		random.setSeed(seed);
 		in = new File(basePath + "in/").list();
 		out = new File(basePath + "out/").list();
+		Arrays.sort(in); Arrays.sort(out);
 		System.setOut(new PrintStream(outputStream));
 	}
 
@@ -31,8 +34,11 @@ public class _241_OndeEstaOMarmoreTest {
 		int i = repetitionInfo.getCurrentRepetition() - 1;
 		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
 		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
-		_241_OndeEstaOMarmore.HuxleyCode.main(null);
-		assertEquals(expected, InOutReader.uniformString(outputStream.toString()), "Failing " + in[i] + " test case");
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(3000), () -> {
+			_241_OndeEstaOMarmore.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+		assertEquals(expected, myAnswer, "Failing " + in[i] + " test case");
 	}
 
 	private void generateInput() throws IOException {
@@ -57,8 +63,10 @@ public class _241_OndeEstaOMarmoreTest {
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream(NelsonOracle.in));
-		_241_OndeEstaOMarmore.HuxleyCode.main(null);
-		final String myAnswer = InOutReader.uniformString(outputStream.toString());
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(3000), () -> {
+			_241_OndeEstaOMarmore.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
 
 		String input = InOutReader.getStringFromFile(NelsonOracle.in);
 

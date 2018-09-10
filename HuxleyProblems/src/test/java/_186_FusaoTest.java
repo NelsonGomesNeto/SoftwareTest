@@ -7,13 +7,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.Random;
 
 public class _186_FusaoTest {
 
 	private static final String basePath = "./src/test/resources/_186_Fusao/";
 	private String ls = System.lineSeparator();
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	private static NelsonOracle oracle;
 	private static Random random = new Random();
 	private static final int testCases = 10;
@@ -23,18 +24,22 @@ public class _186_FusaoTest {
 	@BeforeAll
 	static void setupAll() throws IOException, InterruptedException {
 		oracle = new NelsonOracle(basePath + "_186_FusaoOracle.c");
+		System.setOut(new PrintStream(outputStream));
 		random.setSeed(seed);
 	}
 
 	@BeforeEach
-	void resetOutput() { System.setOut(new PrintStream(outputStream)); }
+	void resetOutput() { outputStream.reset(); }
 
 	@Test
 	void example() throws FileNotFoundException {
 		String expected = InOutReader.uniformString("N" + ls + "S" + ls + "S" + ls);
 		System.setIn(new FileInputStream(basePath + "example.in"));
-		_186_Fusao.HuxleyCode.main(null);
-		assertEquals(expected, InOutReader.uniformString(outputStream.toString()), "Failing on example test case");
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_186_Fusao.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+		assertEquals(expected, myAnswer, "Failing on example test case");
 	}
 
 	@Test
@@ -93,8 +98,10 @@ public class _186_FusaoTest {
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream("./src/main/resources/in"));
-		_186_Fusao.HuxleyCode.main(null);
-		final String myAnswer = InOutReader.uniformString(outputStream.toString());
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_186_Fusao.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
 
 		String input = InOutReader.getStringFromFile("./src/main/resources/in");
 

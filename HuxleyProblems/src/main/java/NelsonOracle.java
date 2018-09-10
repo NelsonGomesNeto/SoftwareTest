@@ -6,8 +6,8 @@ public class NelsonOracle {
 	final static String out = "./src/main/resources/out";
 
 	NelsonOracle(String oraclePath) throws InterruptedException, IOException {
-		Process compile = Runtime.getRuntime().exec("g++ " + oraclePath + " -o ./src/main/resources/run.exe");
-		compile.waitFor();
+		Process compile = Runtime.getRuntime().exec("g++ " + oraclePath + " -o ./src/main/resources/run.exe -std=c++11");
+		while (compile.waitFor() != 0);
 	}
 
     String getAnswer() throws IOException, InterruptedException {

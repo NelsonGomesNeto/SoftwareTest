@@ -3,7 +3,9 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class _151_SimCityTest {
@@ -21,6 +23,7 @@ public class _151_SimCityTest {
 		random.setSeed(seed);
 		in = new File(basePath + "in/").list();
 		out = new File(basePath + "out/").list();
+		Arrays.sort(in); Arrays.sort(out);
 		System.setOut(new PrintStream(outputStream));
 	}
 
@@ -34,8 +37,11 @@ public class _151_SimCityTest {
 		int i = repetitionInfo.getCurrentRepetition() - 1;
 		String expected = InOutReader.getStringFromFile(basePath + "out/" + out[i]);
 		System.setIn(new FileInputStream(basePath + "in/" + in[i]));
-		_151_SimCity.HuxleyCode.main(null);
-		assertEquals(expected, InOutReader.uniformString(outputStream.toString()), "Failing " + in[i] + " test case");
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_151_SimCity.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
+		assertEquals(expected, myAnswer, "Failing " + in[i] + " test case");
 	}
 
 	private void generateInput() throws IOException {
@@ -61,8 +67,10 @@ public class _151_SimCityTest {
 		final String oracleAnswer = oracle.getAnswer();
 
 		System.setIn(new FileInputStream(NelsonOracle.in));
-		_151_SimCity.HuxleyCode.main(null);
-		final String myAnswer = InOutReader.uniformString(outputStream.toString());
+		final String myAnswer = assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+			_151_SimCity.HuxleyCode.main(null);
+			return(InOutReader.uniformString(outputStream.toString()));
+		});
 
 		String input = InOutReader.getStringFromFile(NelsonOracle.in);
 
