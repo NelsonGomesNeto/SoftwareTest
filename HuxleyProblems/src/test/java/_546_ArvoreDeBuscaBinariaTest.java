@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.*;
 
 import java.io.*;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,6 +15,7 @@ public class _546_ArvoreDeBuscaBinariaTest {
 	static void setupAll() throws IOException, InterruptedException {
 		in = new File(basePath + "in/").list();
 		out = new File(basePath + "out/").list();
+		Arrays.sort(in); Arrays.sort(out);
 		System.setOut(new PrintStream(outputStream));
 	}
 
