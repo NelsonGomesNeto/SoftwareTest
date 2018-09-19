@@ -54,7 +54,7 @@ public class AcademicoApp extends Application<ConfigApp> {
 	    final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
 	    final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
 
-        final PersonResource personResource = new PersonResource(personDAO);
+        final PersonResource personResource = new PersonResource(personDAO, courseDAO, subjectDAO);
 	    final SubjectResource subjectResource = new SubjectResource(subjectDAO);
 	    final CourseResource courseResource = new CourseResource(courseDAO, subjectDAO);
 	    final SecretaryResource secretaryResource = new SecretaryResource(secretaryDAO, courseDAO);

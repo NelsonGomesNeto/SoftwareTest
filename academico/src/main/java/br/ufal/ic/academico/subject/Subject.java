@@ -1,5 +1,7 @@
 package br.ufal.ic.academico.subject;
 
+import br.ufal.ic.academico.course.Course;
+import br.ufal.ic.academico.person.Person;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

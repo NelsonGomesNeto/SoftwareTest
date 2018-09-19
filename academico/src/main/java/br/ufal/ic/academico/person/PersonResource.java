@@ -1,5 +1,9 @@
 package br.ufal.ic.academico.person;
 
+import br.ufal.ic.academico.course.Course;
+import br.ufal.ic.academico.course.CourseDAO;
+import br.ufal.ic.academico.subject.Subject;
+import br.ufal.ic.academico.subject.SubjectDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 public class PersonResource {
 
 	private final PersonDAO personDAO;
+	private final CourseDAO courseDAO;
+	private final SubjectDAO subjectDAO;
 
 	@GET
 	@UnitOfWork
@@ -45,19 +51,36 @@ public class PersonResource {
 	public Response save(PersonDTO entity) {
 
 		log.info("save: {}", entity);
-		Person p = new Person(entity.firstName, entity.lastName);
+		Course studying = courseDAO.get(entity.studyingId);
+		Person p = new Person(entity.firstName, entity.lastName, studying);
 		return(Response.ok(personDAO.persist(p)).build());
 	}
 
 	@PUT
-	@Path("/{id}")
+	@Path("/{pid}/enroll/{sid}")
 	@UnitOfWork
 	@Consumes("application/json")
-	public Response update(@PathParam("id") Long id, PersonDTO entity) {
+	public Response enroll(@PathParam("pid") Long pid, @PathParam("sid") Long sid) {
 
-		log.info("update: id={}, {}", id, entity);
-		Person p = personDAO.get(id);
-		// TODO CHANGES (there's nothing to be changed right now)
+		log.info("pid={} enrolls sid={}", pid, sid);
+		Person p = personDAO.get(pid);
+		Subject subject = subjectDAO.get(sid);
+//		if (subject.getRequiredCredits() > p.getCredits())
+//			return(Response.status(428).entity("Student doesn't have enough credits (" + subject.getRequiredCredits().toString() + ")").build());
+		p.enrollSubject(subject);
+		return(Response.ok(personDAO.update(p)).build());
+	}
+
+	@PUT
+	@Path("/{pid}/complete/{sid}")
+	@UnitOfWork
+	@Consumes("application/json")
+	public Response completeSubject(@PathParam("pid") Long pid, @PathParam("sid") Long sid) {
+
+		log.info("pid={} completing sid={}", pid, sid);
+		Person p = personDAO.get(pid);
+		Subject subject = subjectDAO.get(sid);
+		p.completeSubject(subject);
 		return(Response.ok(personDAO.persist(p)).build());
 	}
 
@@ -78,5 +101,6 @@ public class PersonResource {
 	public static class PersonDTO {
 
 		private String firstName, lastName;
+		private Long studyingId;
 	}
 }
