@@ -1,7 +1,5 @@
 package br.ufal.ic.academico.subject;
 
-import br.ufal.ic.academico.course.Course;
-import br.ufal.ic.academico.person.Person;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +18,7 @@ public class Subject {
 
 	private String name, code;
 	private Integer credits, requiredCredits;
-	@OneToMany(cascade = {CascadeType.ALL})
+	@ManyToMany(cascade = {CascadeType.ALL})
 	private List<Subject> requiredSubjects;
 
 	public Subject(String name, String code, Integer credits, Integer requiredCredits, ArrayList<Subject> requiredSubjects) {

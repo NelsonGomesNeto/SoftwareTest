@@ -70,6 +70,6 @@ public class SubjectResource {
 
 		private String name, code;
 		private Integer credits, requiredCredits;
-		private ArrayList<Serializable> requiredSubjectsIds;
+		private ArrayList<Long> requiredSubjectsIds;
 	}
 }

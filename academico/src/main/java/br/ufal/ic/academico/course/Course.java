@@ -18,7 +18,7 @@ public class Course {
 	private Long id;
 
 	private String name;
-	@OneToMany(cascade = {CascadeType.ALL})
+	@ManyToMany(cascade = {CascadeType.ALL})
 	private List<Subject> subjects;
 
 	public Course(String name, ArrayList<Subject> subjects) {

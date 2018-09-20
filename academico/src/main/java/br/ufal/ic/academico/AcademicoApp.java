@@ -6,9 +6,7 @@ import br.ufal.ic.academico.course.CourseResource;
 import br.ufal.ic.academico.department.Department;
 import br.ufal.ic.academico.department.DepartmentDAO;
 import br.ufal.ic.academico.department.DepartmentResource;
-import br.ufal.ic.academico.person.PersonResource;
-import br.ufal.ic.academico.person.Person;
-import br.ufal.ic.academico.person.PersonDAO;
+import br.ufal.ic.academico.person.*;
 import br.ufal.ic.academico.secretary.Secretary;
 import br.ufal.ic.academico.secretary.SecretaryDAO;
 import br.ufal.ic.academico.secretary.SecretaryResource;
@@ -53,8 +51,9 @@ public class AcademicoApp extends Application<ConfigApp> {
 	    final CourseDAO courseDAO = new CourseDAO(hibernate.getSessionFactory());
 	    final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
 	    final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
+	    final SubjectPersonDAO subjectPersonDAO = new SubjectPersonDAO(hibernate.getSessionFactory());
 
-        final PersonResource personResource = new PersonResource(personDAO, courseDAO, subjectDAO);
+        final PersonResource personResource = new PersonResource(personDAO, courseDAO, subjectDAO, subjectPersonDAO);
 	    final SubjectResource subjectResource = new SubjectResource(subjectDAO);
 	    final CourseResource courseResource = new CourseResource(courseDAO, subjectDAO);
 	    final SecretaryResource secretaryResource = new SecretaryResource(secretaryDAO, courseDAO);
@@ -68,7 +67,7 @@ public class AcademicoApp extends Application<ConfigApp> {
     }
 
     private final HibernateBundle<ConfigApp> hibernate
-            = new HibernateBundle<ConfigApp>(Person.class, Subject.class, Course.class, Secretary.class, Department.class) {
+            = new HibernateBundle<ConfigApp>(Person.class, Subject.class, Course.class, Secretary.class, Department.class, SubjectPerson.class) {
         
         @Override
         public DataSourceFactory getDataSourceFactory(ConfigApp configuration) {

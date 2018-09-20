@@ -2,6 +2,7 @@ package br.ufal.ic.academico.person;
 
 import br.ufal.ic.academico.course.Course;
 import br.ufal.ic.academico.subject.Subject;
+import javafx.util.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -23,9 +24,7 @@ public class Person {
 	@ManyToOne
 	private Course studying;
 	@OneToMany
-	private List<Subject> subjects;
-	@OneToMany
-	private List<Subject> completedSubjects;
+	private List<SubjectPerson> subjects;
 
 	public Person(String firstName, String lastName, Course studying) {
 		this.firstName = firstName;
@@ -33,16 +32,30 @@ public class Person {
 		this.credits = 0;
 		this.studying = studying;
 		this.subjects = new ArrayList<>();
-		this.completedSubjects = new ArrayList<>();
 	}
 
-	public void enrollSubject(Subject subject) {
-		this.subjects.add(subject);
+	public void enrollCourse(Course course) { this.studying = course; }
+
+	public void enrollSubject(SubjectPerson subjectPerson) {
+		this.subjects.add(subjectPerson);
 	}
 
 	public void completeSubject(Subject subject) {
-//		this.subjects.clear();
-//		this.subjects.remove(subject);
-//		this.completedSubjects.add(subject);
+		for (SubjectPerson subjectPerson: this.subjects) {
+			if (subjectPerson.getSubject() == subject) {
+				subjectPerson.complete();
+				this.credits += subjectPerson.getSubject().getCredits();
+				return;
+			}
+		}
+	}
+
+	public int findSubjectIndex(Subject subject) {
+		int index = 0;
+		for (SubjectPerson subjectPerson: this.subjects) {
+			if (subjectPerson.getSubject() == subject) return(index);
+			index ++;
+		}
+		return(-1);
 	}
 }
