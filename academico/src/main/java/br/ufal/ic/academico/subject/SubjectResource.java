@@ -48,7 +48,7 @@ public class SubjectResource {
 		log.info("save: {}", entity);
 		ArrayList<Subject> requiredSubjects = new ArrayList<>();
 		entity.requiredSubjectsIds.forEach((id) -> requiredSubjects.add(subjectDAO.get(id)));
-		Subject s = new Subject(entity.name, entity.code, entity.credits, entity.requiredCredits, requiredSubjects);
+		Subject s = new Subject(entity.name, entity.code, entity.credits, entity.requiredCredits, requiredSubjects, entity.degreeLevel);
 		return(Response.ok(subjectDAO.persist(s)).build());
 }
 
@@ -71,5 +71,6 @@ public class SubjectResource {
 		private String name, code;
 		private Integer credits, requiredCredits;
 		private ArrayList<Long> requiredSubjectsIds;
+		private String degreeLevel;
 	}
 }

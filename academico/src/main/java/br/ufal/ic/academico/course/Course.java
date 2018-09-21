@@ -20,9 +20,14 @@ public class Course {
 	private String name;
 	@ManyToMany(cascade = {CascadeType.ALL})
 	private List<Subject> subjects;
+	private String degreeLevel;
 
-	public Course(String name, ArrayList<Subject> subjects) {
+	public Course(String name, ArrayList<Subject> subjects, String degreeLevel) {
 		this.name = name;
 		this.subjects = subjects;
+		if (!degreeLevel.equals("graduate"))
+			this.degreeLevel = "postgraduate";
+		else
+			this.degreeLevel = "graduate";
 	}
 }

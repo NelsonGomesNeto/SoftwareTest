@@ -8,11 +8,11 @@ baseURL = "http://localhost:3000/academico/"
 baseHeader = {"content-type": "application/json"}
 
 person = json.dumps({"firstName": "Nelson", "lastName": "Gomes Neto", "studyingId": 2})
-subject = json.dumps({"name": "P1", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": []})
-subjects = [json.dumps({"name": "P2", "code": "miau", "credits": 69, "requiredCredits": 69, "requiredSubjectsIds": [1]}),
-            json.dumps({"name": "P3", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2]}),
-            json.dumps({"name": "P4", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2, 3]})]
-course = json.dumps({"name": "Computer Science", "subjectsIds": [1, 2, 3, 4]})
+subject = json.dumps({"name": "P1", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [], "degreeLevel": "graduate"})
+subjects = [json.dumps({"name": "P2", "code": "miau", "credits": 69, "requiredCredits": 69, "requiredSubjectsIds": [1], "degreeLevel": "graduate"}),
+            json.dumps({"name": "P3", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2], "degreeLevel": "graduate"}),
+            json.dumps({"name": "P4", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2, 3], "degreeLevel": "graduate"})]
+course = json.dumps({"name": "Computer Science", "subjectsIds": [1, 2, 3, 4], "degreeLevel": "graduate"})
 secretary = json.dumps({"degreeLevel": "graduate", "coursesIds": [5]})
 department = json.dumps({"name": "IC", "graduateId": 6, "postgraduateId": -1})
 

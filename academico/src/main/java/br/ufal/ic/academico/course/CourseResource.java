@@ -51,7 +51,7 @@ public class CourseResource {
 		log.info("save: {}", entity);
 		ArrayList<Subject> subjects = new ArrayList<>();
 		entity.subjectsIds.forEach((id) -> subjects.add(subjectDAO.get(id)));
-		Course c = new Course(entity.name, subjects);
+		Course c = new Course(entity.name, subjects, entity.degreeLevel);
 		return(Response.ok(courseDAO.persist(c)).build());
 	}
 
@@ -63,5 +63,6 @@ public class CourseResource {
 
 		private String name;
 		private ArrayList<Long> subjectsIds;
+		private String degreeLevel;
 	}
 }
