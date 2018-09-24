@@ -88,6 +88,7 @@ public class PersonResource {
 			return(Response.status(428).entity("Student's course doesn't have that subject").build());
 		if (subject.getRequiredCredits() > p.getCredits())
 			return(Response.status(428).entity("Student doesn't have enough credits (" + subject.getRequiredCredits().toString() + ")").build());
+		// if (courseDAO.getDepartment()) // TODO second requirement
 		for (Subject req: subject.getRequiredSubjects()) {
 			int index = p.findSubjectIndex(req);
 			if (index == -1 || !p.getSubjects().get(index).getCompleted())

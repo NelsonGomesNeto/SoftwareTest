@@ -54,6 +54,19 @@ public class SecretaryResource {
 		return(Response.ok(secretaryDAO.persist(s)).build());
 	}
 
+	@PUT
+	@Path("/{id}")
+	@UnitOfWork
+	@Consumes("application/json")
+	public Response addCourses(@PathParam("id") Long secretaryId, ArrayList<Long> courseIds) {
+
+		log.info("add courses: {}", courseIds);
+		ArrayList<Course> courses = new ArrayList<>();
+		courseIds.forEach((id) -> courses.add(courseDAO.get(id)));
+		Secretary s = secretaryDAO.get(secretaryId);
+		return(Response.ok(secretaryDAO.persist(s)).build());
+	}
+
 	@Getter
 	@AllArgsConstructor
 	@RequiredArgsConstructor
