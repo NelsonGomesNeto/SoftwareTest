@@ -1,5 +1,7 @@
 package br.ufal.ic.academico.subject;
 
+import br.ufal.ic.academico.student.Student;
+import br.ufal.ic.academico.student.StudentDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @Path("subject")
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 public class SubjectResource {
 
 	private final SubjectDAO subjectDAO;
+	private final StudentDAO studentDAO;
 
 	@GET
 	@UnitOfWork
@@ -40,6 +44,24 @@ public class SubjectResource {
 		return(Response.ok(s).build());
 	}
 
+	@GET
+	@Path("/{id}/schedule")
+	@UnitOfWork
+	public Response getSchedule(@PathParam("id") Long id) {
+
+		log.info("getSchedule: id={}", id);
+		Subject subject = subjectDAO.get(id);
+		ArrayList<Long> requiredSubjectsIds = new ArrayList<>();
+		for (Subject s: subject.getRequiredSubjects())
+			requiredSubjectsIds.add(s.getId());
+		ArrayList<SubjectDTO.Student> students = new ArrayList<>();
+		ArrayList<Student> student = subjectDAO.getStudentsInSubject(subject);
+		for (Student p: student)
+			students.add(new SubjectDTO.Student(p.getId(), p.getFirstName(), p.getLastName()));
+		SubjectDTO subjectDTO = new SubjectDTO(subject.getName(), subject.getId(), subject.getCredits(), subject.getRequiredCredits(), requiredSubjectsIds, subject.getDegreeLevel(), subject.getProfessor(), students);
+		return(Response.ok(subjectDTO).build());
+	}
+
 	@POST
 	@UnitOfWork
 	@Consumes("application/json")
@@ -48,7 +70,7 @@ public class SubjectResource {
 		log.info("save: {}", entity);
 		ArrayList<Subject> requiredSubjects = new ArrayList<>();
 		entity.requiredSubjectsIds.forEach((id) -> requiredSubjects.add(subjectDAO.get(id)));
-		Subject s = new Subject(entity.name, entity.code, entity.credits, entity.requiredCredits, requiredSubjects, entity.degreeLevel);
+		Subject s = new Subject(entity.name, entity.credits, entity.requiredCredits, requiredSubjects, entity.degreeLevel, entity.professor);
 		return(Response.ok(subjectDAO.persist(s)).build());
 }
 
@@ -68,9 +90,25 @@ public class SubjectResource {
 	@ToString
 	public static class SubjectDTO {
 
-		private String name, code;
+		private String name;
+		private Long id;
 		private Integer credits, requiredCredits;
 		private ArrayList<Long> requiredSubjectsIds;
 		private String degreeLevel;
+		private String professor;
+		private ArrayList<Student> students;
+
+		@Getter
+		@ToString
+		private static class Student {
+			private Long enrollmentId;
+			private String firstName, lastName;
+
+			private Student(Long enrollmentId, String firstName, String lastName) {
+				this.enrollmentId = enrollmentId;
+				this.firstName = firstName;
+				this.lastName = lastName;
+			}
+		}
 	}
 }

@@ -1,13 +1,13 @@
-package br.ufal.ic.academico.person;
+package br.ufal.ic.academico.student;
 
 import br.ufal.ic.academico.BasicDAO;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
-public class SubjectPersonDAO extends BasicDAO<SubjectPerson> {
+public class SubjectStudentDAO extends BasicDAO<SubjectStudent> {
 
-	public SubjectPersonDAO(SessionFactory sessionFactory) {
+	public SubjectStudentDAO(SessionFactory sessionFactory) {
 		super(sessionFactory);
 	}
 }

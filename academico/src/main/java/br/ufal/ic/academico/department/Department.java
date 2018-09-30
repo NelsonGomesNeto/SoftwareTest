@@ -1,10 +1,15 @@
 package br.ufal.ic.academico.department;
 
+import br.ufal.ic.academico.course.Course;
 import br.ufal.ic.academico.secretary.Secretary;
+import br.ufal.ic.academico.subject.Subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -23,5 +28,29 @@ public class Department {
 		this.name = name;
 		this.graduate = graduate;
 		this.postgraduate = postgraduate;
+	}
+
+	public boolean hasSubject(Subject subject) {
+		if (graduate != null)
+			for (Course course: graduate.getCourses())
+				if (course.getSubjects().contains(subject))
+					return(true);
+		if (postgraduate != null)
+			for (Course course: postgraduate.getCourses())
+				if (course.getSubjects().contains(subject))
+					return(true);
+
+		return(false);
+	}
+
+	public ArrayList<Subject> allSubjects() {
+		ArrayList<Subject> subjects = new ArrayList<>();
+		if (graduate != null)
+			for (Course course: graduate.getCourses())
+				subjects.addAll(course.getSubjects());
+		if (postgraduate != null)
+			for (Course course: postgraduate.getCourses())
+				subjects.addAll(course.getSubjects());
+		return(subjects);
 	}
 }

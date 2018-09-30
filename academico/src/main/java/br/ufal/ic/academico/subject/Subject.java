@@ -16,15 +16,15 @@ public class Subject {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String name, code;
+	private String name;
 	private Integer credits, requiredCredits;
 	@ManyToMany(cascade = {CascadeType.ALL})
 	private List<Subject> requiredSubjects;
 	private String degreeLevel;
+	private String professor;
 
-	public Subject(String name, String code, Integer credits, Integer requiredCredits, ArrayList<Subject> requiredSubjects, String degreeLevel) {
+	public Subject(String name, Integer credits, Integer requiredCredits, ArrayList<Subject> requiredSubjects, String degreeLevel, String professor) {
 		this.name = name;
-		this.code = code;
 		this.credits = credits;
 		this.requiredCredits = requiredCredits;
 		this.requiredSubjects = requiredSubjects;
@@ -32,5 +32,6 @@ public class Subject {
 			this.degreeLevel = "postgraduate";
 		else
 			this.degreeLevel = "graduate";
+		this.professor = professor;
 	}
 }

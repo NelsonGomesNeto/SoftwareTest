@@ -7,11 +7,11 @@ def jsonStr(js):
 baseURL = "http://localhost:3000/academico/"
 baseHeader = {"content-type": "application/json"}
 
-person = json.dumps({"firstName": "Nelson", "lastName": "Gomes Neto", "studyingId": 2})
-subject = json.dumps({"name": "P1", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [], "degreeLevel": "graduate"})
-subjects = [json.dumps({"name": "P2", "code": "miau", "credits": 69, "requiredCredits": 69, "requiredSubjectsIds": [1], "degreeLevel": "graduate"}),
-            json.dumps({"name": "P3", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2], "degreeLevel": "graduate"}),
-            json.dumps({"name": "P4", "code": "miau", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2, 3], "degreeLevel": "graduate"})]
+student = json.dumps({"firstName": "Nelson", "lastName": "Gomes Neto", "studyingId": 2})
+subject = json.dumps({"name": "P1", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [], "degreeLevel": "graduate", "professor": "Willy Tiengo"})
+subjects = [json.dumps({"name": "P2", "credits": 69, "requiredCredits": 69, "requiredSubjectsIds": [1], "degreeLevel": "graduate", "professor": "Willy Tiengo"}),
+            json.dumps({"name": "P3", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2], "degreeLevel": "graduate", "professor": "Willy Tiengo"}),
+            json.dumps({"name": "P4", "credits": 69, "requiredCredits": 0, "requiredSubjectsIds": [1, 2, 3], "degreeLevel": "graduate", "professor": "Willy Tiengo"})]
 course = json.dumps({"name": "Computer Science", "subjectsIds": [1, 2, 3, 4], "degreeLevel": "graduate"})
 secretary = json.dumps({"degreeLevel": "graduate", "coursesIds": [5]})
 department = json.dumps({"name": "IC", "graduateId": 6, "postgraduateId": -1})
@@ -45,28 +45,41 @@ print("GET all:\n", jsonStr(requests.get(baseURL + "department/").json()), sep='
 
 print("---------------------------------------------------------------------------------------------------------")
 
-print("\tPerson:")
-print("POST:\n", jsonStr(requests.post(baseURL + "person/", data=person, headers=baseHeader).json()), sep='')
-response = requests.put(baseURL + "person/8/enrollSubject/1")
+print("\tStudent:")
+print("POST:\n", jsonStr(requests.post(baseURL + "student/", data=student, headers=baseHeader).json()), sep='')
+response = requests.put(baseURL + "student/8/enrollSubject/1")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
 
-response = requests.put(baseURL + "person/8/enrollCourse/5")
+response = requests.put(baseURL + "student/8/enrollCourse/5")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
 
-response = requests.put(baseURL + "person/8/enrollSubject/1")
+response = requests.put(baseURL + "student/8/enrollSubject/1")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
-response = requests.put(baseURL + "person/8/enrollSubject/2")
+response = requests.put(baseURL + "student/8/enrollSubject/2")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
-response = requests.put(baseURL + "person/8/enrollSubject/3")
-print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
-
-print("PUT (complete):\n", jsonStr(requests.put(baseURL + "person/8/complete/1").json()), sep='')
-response = requests.put(baseURL + "person/8/enrollSubject/2")
+response = requests.put(baseURL + "student/8/enrollSubject/3")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
 
-print("PUT (complete):\n", jsonStr(requests.put(baseURL + "person/8/complete/2").json()), sep='')
-response = requests.put(baseURL + "person/8/enrollSubject/3")
+print("PUT (complete):\n", jsonStr(requests.put(baseURL + "student/8/complete/1").json()), sep='')
+response = requests.put(baseURL + "student/8/enrollSubject/2")
 print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
 
-print("GET id:\n", jsonStr(requests.get(baseURL + "person/8").json()), sep='')
-print("GET all:\n", jsonStr(requests.get(baseURL + "person/").json()), sep='')
+print("PUT (complete):\n", jsonStr(requests.put(baseURL + "student/8/complete/2").json()), sep='')
+response = requests.put(baseURL + "student/8/enrollSubject/3")
+print("PUT (enroll subject):\n", (response.status_code, response.text) if response.status_code != 200 else jsonStr(response.json()), sep='')
+
+print("GET id:\n", jsonStr(requests.get(baseURL + "student/8").json()), sep='')
+print("GET all:\n", jsonStr(requests.get(baseURL + "student").json()), sep='')
+print("GET subjectsFromDepartment:\n", jsonStr(requests.get(baseURL + "student/8/subjectsFromDepartment").json()), sep='')
+
+# print("GET all:\n", jsonStr(requests.get(baseURL + "department/").json()))
+
+print("---------------------------------------------------------------------------------------------------------")
+print("\tFunctional Requirements")
+print("GET allName:\n", jsonStr(requests.get(baseURL + "student/names").json()), sep='') # 1 list name of every student
+print("GET getStudentsDepartmentSubjects:\n", jsonStr(requests.get(baseURL + "student/8/subjectsFromDepartment").json()), sep='') # 1 list subjects of student's department
+# 1 and 2: all constraints to enrollment were covered above on "Student" section
+
+print("GET proofOfEnrollment:\n", jsonStr(requests.get(baseURL + "student/8/proofOfEnrollment").json())) # 3A
+print("GET schedule:\n", jsonStr(requests.get(baseURL + "subject/3/schedule").json())) # 3B
+print("GET notDeep:\n", jsonStr(requests.get(baseURL + "department/notDeep").json())) # 3C

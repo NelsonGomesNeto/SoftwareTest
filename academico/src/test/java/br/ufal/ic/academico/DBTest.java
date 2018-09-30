@@ -1,7 +1,7 @@
 package br.ufal.ic.academico;
 
-import br.ufal.ic.academico.person.Person;
-import br.ufal.ic.academico.person.PersonDAO;
+import br.ufal.ic.academico.student.Student;
+import br.ufal.ic.academico.student.StudentDAO;
 import io.dropwizard.testing.junit5.DAOTestExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import lombok.SneakyThrows;
@@ -19,15 +19,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class DBTest {
     
     public DAOTestExtension dbTesting = DAOTestExtension.newBuilder()
-            .addEntityClass(Person.class).build();
+            .addEntityClass(Student.class).build();
     
-    private PersonDAO dao;
+    private StudentDAO dao;
 
     @BeforeEach
     @SneakyThrows
     public void setUp() {
         System.out.println("setUp");
-        dao = new PersonDAO(dbTesting.getSessionFactory());
+        dao = new StudentDAO(dbTesting.getSessionFactory());
     }
     
     @Test
@@ -35,9 +35,9 @@ public class DBTest {
 
 //        System.out.println("testCRUD");
 //
-//        Person c1 = new Person("1", "2", (Long) -1);
+//        Student c1 = new Student("1", "2", (Long) -1);
 //
-//        Person saved = dbTesting.inTransaction(() -> dao.persist(c1));
+//        Student saved = dbTesting.inTransaction(() -> dao.persist(c1));
 //
 //        assertNotNull(saved);
 //        assertNotNull(saved.getId());

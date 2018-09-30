@@ -1,8 +1,7 @@
-package br.ufal.ic.academico.person;
+package br.ufal.ic.academico.student;
 
 import br.ufal.ic.academico.course.Course;
 import br.ufal.ic.academico.subject.Subject;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @RequiredArgsConstructor
-public class Person {
+public class Student {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +23,9 @@ public class Person {
 	@ManyToOne
 	private Course studying;
 	@OneToMany
-	private List<SubjectPerson> subjects;
+	private List<SubjectStudent> subjects;
 
-	public Person(String firstName, String lastName, Course studying) {
+	public Student(String firstName, String lastName, Course studying) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.credits = 0;
@@ -36,24 +35,31 @@ public class Person {
 
 	public void enrollCourse(Course course) { this.studying = course; }
 
-	public void enrollSubject(SubjectPerson subjectPerson) {
-		this.subjects.add(subjectPerson);
+	public void enrollSubject(SubjectStudent subjectStudent) {
+		this.subjects.add(subjectStudent);
 	}
 
 	public void completeSubject(Subject subject) {
-		for (SubjectPerson subjectPerson: this.subjects) {
-			if (subjectPerson.getSubject() == subject) {
-				subjectPerson.complete();
-				this.credits += subjectPerson.getSubject().getCredits();
+		for (SubjectStudent subjectStudent: this.subjects) {
+			if (subjectStudent.getSubject() == subject) {
+				subjectStudent.complete();
+				this.credits += subjectStudent.getSubject().getCredits();
 				return;
 			}
 		}
 	}
 
+	public boolean completedSubject(Subject subject) {
+		for (SubjectStudent subjectStudent: this.subjects)
+			if (subjectStudent.getCompleted() && subjectStudent.getSubject().getId().equals(subject.getId()))
+				return(true);
+		return(false);
+	}
+
 	public int findSubjectIndex(Subject subject) {
 		int index = 0;
-		for (SubjectPerson subjectPerson: this.subjects) {
-			if (subjectPerson.getSubject() == subject) return(index);
+		for (SubjectStudent subjectStudent: this.subjects) {
+			if (subjectStudent.getSubject() == subject) return(index);
 			index ++;
 		}
 		return(-1);

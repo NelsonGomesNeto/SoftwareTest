@@ -6,7 +6,7 @@ import br.ufal.ic.academico.course.CourseResource;
 import br.ufal.ic.academico.department.Department;
 import br.ufal.ic.academico.department.DepartmentDAO;
 import br.ufal.ic.academico.department.DepartmentResource;
-import br.ufal.ic.academico.person.*;
+import br.ufal.ic.academico.student.*;
 import br.ufal.ic.academico.secretary.Secretary;
 import br.ufal.ic.academico.secretary.SecretaryDAO;
 import br.ufal.ic.academico.secretary.SecretaryResource;
@@ -46,20 +46,20 @@ public class AcademicoApp extends Application<ConfigApp> {
     @Override
     public void run(ConfigApp config, Environment environment) {
 
-        final PersonDAO personDAO = new PersonDAO(hibernate.getSessionFactory());
+        final StudentDAO studentDAO = new StudentDAO(hibernate.getSessionFactory());
         final SubjectDAO subjectDAO = new SubjectDAO(hibernate.getSessionFactory());
 	    final CourseDAO courseDAO = new CourseDAO(hibernate.getSessionFactory());
 	    final SecretaryDAO secretaryDAO = new SecretaryDAO(hibernate.getSessionFactory());
 	    final DepartmentDAO departmentDAO = new DepartmentDAO(hibernate.getSessionFactory());
-	    final SubjectPersonDAO subjectPersonDAO = new SubjectPersonDAO(hibernate.getSessionFactory());
+	    final SubjectStudentDAO subjectStudentDAO = new SubjectStudentDAO(hibernate.getSessionFactory());
 
-        final PersonResource personResource = new PersonResource(personDAO, courseDAO, subjectDAO, subjectPersonDAO);
-	    final SubjectResource subjectResource = new SubjectResource(subjectDAO);
+        final StudentResource studentResource = new StudentResource(studentDAO, courseDAO, subjectDAO, subjectStudentDAO);
+	    final SubjectResource subjectResource = new SubjectResource(subjectDAO, studentDAO);
 	    final CourseResource courseResource = new CourseResource(courseDAO, subjectDAO);
 	    final SecretaryResource secretaryResource = new SecretaryResource(secretaryDAO, courseDAO);
 	    final DepartmentResource departmentResource = new DepartmentResource(departmentDAO, secretaryDAO);
         
-        environment.jersey().register(personResource);
+        environment.jersey().register(studentResource);
 	    environment.jersey().register(subjectResource);
 	    environment.jersey().register(courseResource);
 	    environment.jersey().register(secretaryResource);
@@ -67,7 +67,7 @@ public class AcademicoApp extends Application<ConfigApp> {
     }
 
     private final HibernateBundle<ConfigApp> hibernate
-            = new HibernateBundle<ConfigApp>(Person.class, Subject.class, Course.class, Secretary.class, Department.class, SubjectPerson.class) {
+            = new HibernateBundle<ConfigApp>(Student.class, Subject.class, Course.class, Secretary.class, Department.class, SubjectStudent.class) {
         
         @Override
         public DataSourceFactory getDataSourceFactory(ConfigApp configuration) {

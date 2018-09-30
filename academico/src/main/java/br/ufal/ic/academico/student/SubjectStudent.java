@@ -1,4 +1,4 @@
-package br.ufal.ic.academico.person;
+package br.ufal.ic.academico.student;
 
 import br.ufal.ic.academico.subject.Subject;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @RequiredArgsConstructor
-public class SubjectPerson {
+public class SubjectStudent {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +19,7 @@ public class SubjectPerson {
 	private Subject subject;
 	private Boolean completed;
 
-	public SubjectPerson(Subject subject, Boolean completed) {
+	public SubjectStudent(Subject subject, Boolean completed) {
 		this.subject = subject;
 		this.completed = completed;
 	}
