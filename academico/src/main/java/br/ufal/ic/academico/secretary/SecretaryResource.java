@@ -39,6 +39,10 @@ public class SecretaryResource {
 
 		log.info("getById: id={}", id);
 		Secretary s = secretaryDAO.get(id);
+		if (s == null)
+			return(Response.status(Response.Status.NOT_FOUND).entity(
+				String.format("Secretary with id %d doesn't exist", id)).build());
+
 		return(Response.ok(s).build());
 	}
 
@@ -49,7 +53,6 @@ public class SecretaryResource {
 
 		log.info("save: {}", entity);
 		ArrayList<Course> courses = new ArrayList<>();
-		entity.coursesIds.forEach((id) -> courses.add(courseDAO.get(id)));
 		Secretary s = new Secretary(entity.degreeLevel, courses);
 		return(Response.ok(secretaryDAO.persist(s)).build());
 	}
@@ -61,9 +64,17 @@ public class SecretaryResource {
 	public Response addCourses(@PathParam("id") Long secretaryId, ArrayList<Long> courseIds) {
 
 		log.info("add courses: {}", courseIds);
-		ArrayList<Course> courses = new ArrayList<>();
-		courseIds.forEach((id) -> courses.add(courseDAO.get(id)));
 		Secretary s = secretaryDAO.get(secretaryId);
+		if (s == null)
+			return(Response.status(Response.Status.NOT_FOUND).entity(
+				String.format("Secretary with id %d doesn't exist", secretaryId)).build());
+
+		ArrayList<Course> courses = new ArrayList<>();
+		courseIds.forEach((id) -> {
+			Course aux = courseDAO.get(id);
+			if (aux != null) courses.add(aux);
+		});
+		s.getCourses().addAll(courses);
 		return(Response.ok(secretaryDAO.persist(s)).build());
 	}
 
@@ -74,6 +85,5 @@ public class SecretaryResource {
 	public static class SecretaryDTO {
 
 		private String degreeLevel;
-		ArrayList<Long> coursesIds;
 	}
 }

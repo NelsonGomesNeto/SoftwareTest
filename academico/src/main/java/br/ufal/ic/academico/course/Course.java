@@ -30,4 +30,13 @@ public class Course {
 		else
 			this.degreeLevel = "graduate";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Course) {
+			Course c = (Course) obj;
+			return(c.getName().equals(this.getName()) && c.getDegreeLevel().equals(this.getDegreeLevel()));
+		}
+		return(false);
+	}
 }

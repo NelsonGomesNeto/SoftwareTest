@@ -69,6 +69,9 @@ public class DepartmentResource {
 
 		log.info("getById: id={}", id);
 		Department d = departmentDAO.get(id);
+		if (d == null)
+			return(Response.status(Response.Status.NOT_FOUND).entity(
+				String.format("department with id %d wasn't found", id)).build());
 		return(Response.ok(d).build());
 	}
 
@@ -77,8 +80,11 @@ public class DepartmentResource {
 	@UnitOfWork
 	public Response getSubjects(@PathParam("id") Long id) {
 
+		log.info("getSubjects: id={}", id);
 		Department d = departmentDAO.get(id);
-		log.info("getSubjects");
+		if (d == null)
+			return(Response.status(Response.Status.NOT_FOUND).entity(
+				String.format("department with id %d wasn't found", id)).build());
 		return(Response.ok(d.allSubjects()).build());
 	}
 
@@ -88,8 +94,10 @@ public class DepartmentResource {
 	public Response save(DepartmentDTO entity) {
 
 		log.info("save: {}", entity);
-		Secretary graduate = entity.graduateId == -1 ? null : secretaryDAO.get(entity.graduateId);
-		Secretary postgraduate = entity.postgraduateId == -1 ? null : secretaryDAO.get(entity.postgraduateId);
+		Secretary graduate = secretaryDAO.get(entity.graduateId);
+		Secretary postgraduate = secretaryDAO.get(entity.postgraduateId);
+		if (graduate != null && !graduate.getDegreeLevel().equals("graduate")) graduate = null;
+		if (postgraduate != null && !postgraduate.getDegreeLevel().equals("postgraduate")) postgraduate = null;
 
 		Department d = new Department(entity.name, graduate, postgraduate);
 		return(Response.ok(departmentDAO.persist(d)).build());
@@ -102,7 +110,7 @@ public class DepartmentResource {
 	public static class DepartmentDTO {
 
 		private String name;
-		@ToString.Exclude
+//		@ToString.Exclude
 		private Long graduateId, postgraduateId;
 		private ArrayList<DepartmentDTO.Subject> graduateSecretary, postgraduateSecretary;
 
@@ -113,7 +121,6 @@ public class DepartmentResource {
 		}
 
 		@Getter
-		@ToString
 		private static class Subject {
 			private String name;
 			private Long id;
@@ -132,6 +139,5 @@ public class DepartmentResource {
 				this.professor = professor;
 			}
 		}
-
 	}
 }

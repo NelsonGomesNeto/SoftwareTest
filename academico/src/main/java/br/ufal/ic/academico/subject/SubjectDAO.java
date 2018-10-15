@@ -20,4 +20,10 @@ public class SubjectDAO extends BasicDAO<Subject> {
 			.setParameter("subjectId", subject.getId())
 			.list());
 	}
+
+	public Subject getByCode(String code) {
+		Subject subject = (Subject) currentSession().createQuery("select s from Subject s where s.code = :code")
+			.setParameter("code", code).uniqueResult();
+		return(subject);
+	}
 }

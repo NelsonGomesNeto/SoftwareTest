@@ -28,4 +28,13 @@ public class Secretary {
 			this.degreeLevel = "graduate";
 		this.courses = courses;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Secretary) {
+			Secretary s = (Secretary) obj;
+			return(s.getDegreeLevel().equals(this.getDegreeLevel()) && s.getCourses().equals(this.getCourses()));
+		}
+		return(false);
+	}
 }

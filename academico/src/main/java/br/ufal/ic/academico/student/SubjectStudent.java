@@ -27,4 +27,13 @@ public class SubjectStudent {
 	void complete() {
 		this.completed = true;
 	}
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj instanceof SubjectStudent) {
+//			SubjectStudent ss = (SubjectStudent) obj;
+//			return(ss.getCompleted() == this.getCompleted() && ss.getSubject().equals(this.getSubject()));
+//		}
+//		return(false);
+//	}
 }

@@ -14,6 +14,15 @@ public class CourseDAO extends BasicDAO<Course> {
 		super(sessionFactory);
 	}
 
+	public Course getByNameAndDegreeLevel(String name, String degreeLevel) {
+		Course course = (Course) currentSession()
+			.createQuery("select c from Course c where c.name = :name and c.degreeLevel = :degreelevel")
+			.setParameter("name", name)
+			.setParameter("degreelevel", degreeLevel)
+			.uniqueResult();
+		return(course);
+	}
+
 	public Department getDepartment(Course course) {
 //		Secretary secretary = (Secretary) currentSession().createQuery("select s from Secretary s where :courseid in (select c.id from s.courses c)")
 //											.setParameter("courseid", course.getId())

@@ -4,7 +4,6 @@ import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public abstract class BasicDAO<T> extends AbstractDAO<T> {
 
@@ -20,9 +19,5 @@ public abstract class BasicDAO<T> extends AbstractDAO<T> {
 	@Override
 	public T persist(T entity) {
 		return super.persist(entity);
-	}
-
-	public void delete(Serializable id) {
-		currentSession().delete(this.get(id));
 	}
 }

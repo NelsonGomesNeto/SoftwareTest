@@ -5,10 +5,8 @@ import br.ufal.ic.academico.secretary.Secretary;
 import br.ufal.ic.academico.subject.Subject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @Entity
@@ -52,5 +50,14 @@ public class Department {
 			for (Course course: postgraduate.getCourses())
 				subjects.addAll(course.getSubjects());
 		return(subjects);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Department) {
+			Department d = (Department) obj;
+			return(d.getName().equals(this.getName()));
+		}
+		return(false);
 	}
 }

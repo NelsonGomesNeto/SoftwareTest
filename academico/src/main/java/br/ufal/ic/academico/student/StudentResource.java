@@ -65,8 +65,8 @@ public class StudentResource {
 		Student student = studentDAO.get(id);
 		ArrayList<ProofOfEnrollmentDTO.Subject> subjects = new ArrayList<>();
 		for (SubjectStudent subject: student.getSubjects())
-			subjects.add(new ProofOfEnrollmentDTO.Subject(subject.getSubject().getId(), subject.getSubject().getName()));
-		ProofOfEnrollmentDTO proofOfEnrollmentDTO = new ProofOfEnrollmentDTO(student.getFirstName(), student.getLastName(), student.getStudying().getName(), student.getId(), subjects);
+			subjects.add(new ProofOfEnrollmentDTO.Subject(subject.getSubject().getId(), subject.getSubject().getName(), subject.getSubject().getCode()));
+		ProofOfEnrollmentDTO proofOfEnrollmentDTO = new ProofOfEnrollmentDTO(student.getFirstName(), student.getLastName(), student.getStudying().getName(), student.getId(), student.getCredits(), subjects);
 		return(Response.ok(proofOfEnrollmentDTO).build());
 	}
 
@@ -87,87 +87,78 @@ public class StudentResource {
 	public Response save(StudentDTO entity) {
 
 		log.info("save: {}", entity);
+		if (entity == null || entity.studyingId == null)
+			return(Response.status(Response.Status.BAD_REQUEST)
+				.entity("json doesn't have a student").build());
+		if (courseDAO.get(entity.studyingId) == null)
+			return(Response.status(Response.Status.BAD_REQUEST)
+				.entity(String.format("Course with id %s doesn't exist", entity.studyingId.toString())).build());
+
 		Course studying = courseDAO.get(entity.studyingId);
 		Student p = new Student(entity.firstName, entity.lastName, studying);
 		return(Response.ok(studentDAO.persist(p)).build());
 	}
 
 	@PUT
-	@Path("/{pid}/enrollCourse/{cid}")
+	@Path("/{stId}/enrollSubject/{sbCode}")
 	@UnitOfWork
 	@Consumes("application/json")
-	public Response enrollCourse(@PathParam("pid") Long pid, @PathParam("cid") Long cid) {
+	public Response enrollSubject(@PathParam("stId") Long stId, @PathParam("sbCode") String sbCode) {
 
-		log.info("pid={} enrolls course cid={}", pid, cid);
-		Student p = studentDAO.get(pid);
-		Course course = courseDAO.get(cid);
-		if (p.getStudying() != null)
-			return(Response.status(428).entity("Student already enrolled in a course").build());
-		p.enrollCourse(course);
-		return(Response.ok(studentDAO.persist(p)).build());
-	}
-
-	@PUT
-	@Path("/{pid}/enrollSubject/{sid}")
-	@UnitOfWork
-	@Consumes("application/json")
-	public Response enrollSubject(@PathParam("pid") Long pid, @PathParam("sid") Long sid) {
-
-		log.info("pid={} enrolls subject sid={}", pid, sid);
-		Student p = studentDAO.get(pid);
-		Subject subject = subjectDAO.get(sid);
-		if (p.getStudying() == null)
-			return(Response.status(428).entity("Student not in a course").build());
-		if (!p.getStudying().getSubjects().contains(subject))
-			return(Response.status(428).entity("Student's course doesn't have that subject").build());
+		log.info("stId={} enrolls subject sbCode={}", stId, sbCode);
+		Student student = studentDAO.get(stId);
+		if (student == null)
+			return(Response.status(Response.Status.BAD_REQUEST).entity(
+				String.format("Student with id %d doesn't exist", stId)).build());
+		Subject subject = subjectDAO.getByCode(sbCode);
+		if (subject == null)
+			return(Response.status(Response.Status.BAD_REQUEST).entity(
+				String.format("Subject with code %s doesn't exist", sbCode)).build());
 
 		// First requirement
-		if (subject.getRequiredCredits() > p.getCredits())
-			return(Response.status(428).entity("Student doesn't have enough credits (" + subject.getRequiredCredits().toString() + ")").build());
+		if (subject.getRequiredCredits() > student.getCredits())
+			return(Response.status(Response.Status.PRECONDITION_FAILED).entity("Student doesn't have enough credits (" + subject.getRequiredCredits().toString() + ")").build());
 		for (Subject req: subject.getRequiredSubjects()) {
-			int index = p.findSubjectIndex(req);
-			if (index == -1 || !p.getSubjects().get(index).getCompleted())
-				return(Response.status(428).entity("Student didn't complete required subjects").build());
+			int index = student.findSubjectIndex(req);
+			if (index == -1 || !student.getSubjects().get(index).getCompleted())
+				return(Response.status(Response.Status.PRECONDITION_FAILED).entity("Student didn't complete required subjects").build());
 		}
 
 		// Second requirement
-		Department department = courseDAO.getDepartment(p.getStudying());
+		Department department = courseDAO.getDepartment(student.getStudying());
 		if (department == null || !department.hasSubject(subject))
-			return(Response.status(428).entity("Student's department doesn't have that subject").build());
-		if (p.getStudying().getDegreeLevel().equals("postgraduate") && subject.getDegreeLevel().equals("graduate"))
-			return(Response.status(428).entity("Postgraduate students can't enroll on graduate subjects").build());
-		if (p.getStudying().getDegreeLevel().equals("graduate") && subject.getDegreeLevel().equals("postgraduate") && p.getCredits() < 170)
-			return(Response.status(428).entity("Graduate student doesn't have at least 170 credits to enroll postgraduate subjects").build());
-		if (p.completedSubject(subject))
-			return(Response.status(428).entity("Student already completed that subject").build());
+			return(Response.status(Response.Status.PRECONDITION_FAILED).entity("Student's department doesn't have that subject").build());
+		if (student.getStudying().getDegreeLevel().equals("postgraduate") && subject.getDegreeLevel().equals("graduate"))
+			return(Response.status(Response.Status.PRECONDITION_FAILED).entity("Postgraduate students can't enroll on graduate subjects").build());
+		if (student.getStudying().getDegreeLevel().equals("graduate") && subject.getDegreeLevel().equals("postgraduate") && student.getCredits() < 170)
+			return(Response.status(Response.Status.PRECONDITION_FAILED).entity("Graduate student doesn't have at least 170 credits to enroll postgraduate subjects").build());
+		if (student.completedSubject(subject))
+			return(Response.status(Response.Status.BAD_REQUEST).entity("Student already completed that subject").build());
 
 		SubjectStudent subjectStudent = new SubjectStudent(subject, false);
-		p.enrollSubject(subjectStudent);
+		student.enrollSubject(subjectStudent);
 		subjectStudentDAO.persist(subjectStudent);
-		return(Response.ok(studentDAO.persist(p)).build());
+		return(Response.ok(studentDAO.persist(student)).build());
 	}
 
 	@PUT
-	@Path("/{pid}/complete/{sid}")
+	@Path("/{stId}/complete/{sbCode}")
 	@UnitOfWork
 	@Consumes("application/json")
-	public Response completeSubject(@PathParam("pid") Long pid, @PathParam("sid") Long sid) {
+	public Response completeSubject(@PathParam("stId") Long stId, @PathParam("sbCode") String sbCode) {
 
-		log.info("pid={} completing sid={}", pid, sid);
-		Student p = studentDAO.get(pid);
-		Subject subject = subjectDAO.get(sid);
-		p.completeSubject(subject);
-		return(Response.ok(studentDAO.persist(p)).build());
-	}
+		log.info("stId={} completing sbCode={}", stId, sbCode);
+		Student student = studentDAO.get(stId);
+		if (student == null)
+			return(Response.status(Response.Status.BAD_REQUEST).entity(
+				String.format("Student with id %d doesn't exist", stId)).build());
+		Subject subject = subjectDAO.getByCode(sbCode);
+		if (subject == null)
+			return(Response.status(Response.Status.BAD_REQUEST).entity(
+				String.format("Subject with code %s doesn't exist", sbCode)).build());
 
-	@DELETE
-	@Path("/{id}")
-	@UnitOfWork
-	public Response delete(@PathParam("id") Long id) {
-
-		log.info("delete: id={}", id);
-		studentDAO.delete(id);
-		return(Response.status(Response.Status.NO_CONTENT).build());
+		student.completeSubject(subject);
+		return(Response.ok(studentDAO.persist(student)).build());
 	}
 
 	@Getter
@@ -182,23 +173,23 @@ public class StudentResource {
 
 	@Getter
 	@AllArgsConstructor
-	@RequiredArgsConstructor
-	@ToString
 	public static class ProofOfEnrollmentDTO {
 
 		private String firstName, lastName, studying;
 		private Long enrollmentId;
+		private Integer credits;
 		private ArrayList<ProofOfEnrollmentDTO.Subject> subjects;
 
 		@Getter
-		@ToString
 		private static class Subject {
 			private Long id;
 			private String name;
+			private String code;
 
-			private Subject(Long id, String name) {
+			private Subject(Long id, String name, String code) {
 				this.id = id;
 				this.name = name;
+				this.code = code;
 			}
 		}
 	}

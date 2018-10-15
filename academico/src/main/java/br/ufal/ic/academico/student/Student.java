@@ -33,15 +33,13 @@ public class Student {
 		this.subjects = new ArrayList<>();
 	}
 
-	public void enrollCourse(Course course) { this.studying = course; }
-
 	public void enrollSubject(SubjectStudent subjectStudent) {
 		this.subjects.add(subjectStudent);
 	}
 
 	public void completeSubject(Subject subject) {
 		for (SubjectStudent subjectStudent: this.subjects) {
-			if (subjectStudent.getSubject() == subject) {
+			if (subjectStudent.getSubject() == subject && !subjectStudent.getCompleted()) {
 				subjectStudent.complete();
 				this.credits += subjectStudent.getSubject().getCredits();
 				return;
@@ -63,5 +61,14 @@ public class Student {
 			index ++;
 		}
 		return(-1);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Student) {
+			Student s = (Student) obj;
+			return(s.getId().equals(this.getId()));
+		}
+		return(false);
 	}
 }

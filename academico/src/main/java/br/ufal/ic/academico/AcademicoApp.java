@@ -18,7 +18,6 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import javafx.scene.Scene;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -54,7 +53,7 @@ public class AcademicoApp extends Application<ConfigApp> {
 	    final SubjectStudentDAO subjectStudentDAO = new SubjectStudentDAO(hibernate.getSessionFactory());
 
         final StudentResource studentResource = new StudentResource(studentDAO, courseDAO, subjectDAO, subjectStudentDAO);
-	    final SubjectResource subjectResource = new SubjectResource(subjectDAO, studentDAO);
+	    final SubjectResource subjectResource = new SubjectResource(subjectDAO);
 	    final CourseResource courseResource = new CourseResource(courseDAO, subjectDAO);
 	    final SecretaryResource secretaryResource = new SecretaryResource(secretaryDAO, courseDAO);
 	    final DepartmentResource departmentResource = new DepartmentResource(departmentDAO, secretaryDAO);

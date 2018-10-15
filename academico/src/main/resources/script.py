@@ -80,6 +80,6 @@ print("GET allName:\n", jsonStr(requests.get(baseURL + "student/names").json()),
 print("GET getStudentsDepartmentSubjects:\n", jsonStr(requests.get(baseURL + "student/8/subjectsFromDepartment").json()), sep='') # 1 list subjects of student's department
 # 1 and 2: all constraints to enrollment were covered above on "Student" section
 
-print("GET proofOfEnrollment:\n", jsonStr(requests.get(baseURL + "student/8/proofOfEnrollment").json())) # 3A
-print("GET schedule:\n", jsonStr(requests.get(baseURL + "subject/3/schedule").json())) # 3B
-print("GET notDeep:\n", jsonStr(requests.get(baseURL + "department/notDeep").json())) # 3C
+print("GET proofOfEnrollment:\n", jsonStr(requests.get(baseURL + "student/8/proofOfEnrollment").json()), sep='') # 3C
+print("GET schedule:\n", jsonStr(requests.get(baseURL + "subject/3/schedule").json()), sep='') # 3B
+print("GET notDeep:\n", jsonStr(requests.get(baseURL + "department/notDeep").json()), sep='') # 3A
